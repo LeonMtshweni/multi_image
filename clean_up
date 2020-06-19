@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# remove essential directories
+rm -r _* scripts logs ms_files maps bdsf image_stats engine_scripts casa_junk
+
+# remove residual files
+
+rm *.sh
+rm *.log
+rm *.last
