@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import os, sys
 from os import path
-import pickle
-import beta_setup as gen # imports setup file
+import _setup as beta
 import glob
 import shutil
 
@@ -10,7 +9,7 @@ import shutil
 # path to remember
 cwd = os.getcwd()
 # crease essential directories to keep products
-gen.create_dirs()
+beta.create_dirs()
 IDIA_CONTAINER_PATH = '/software/astro/caracal/STIMELA_IMAGES_1.6.1/'
 STIMELA_CONTAINER_PATH = '/software/astro/caracal/STIMELA_IMAGES_1.6.1/'
 #wsclean container
@@ -112,7 +111,7 @@ def main():
            bash_command = 'cp -r ' + src + ' ' + dst # + '.' + extension 
 
            # write the slurm file
-           gen.write_slurm(opfile  = slurmfile,
+           beta.write_slurm(opfile  = slurmfile,
                            jobname = myms+'_cp',
                            logfile = logfile,
                            syscall = bash_command) 
@@ -130,7 +129,7 @@ def main():
 
          syscall  = 'singularity exec '+CASA_CONTAINER+' '
          syscall += 'casa -c ' + cwd + '/gamma_flag_summary.py ' + myms_ext + ' --nologger --log2term --nogui\n'
-         gen.write_slurm(opfile  = slurmfile,
+         beta.write_slurm(opfile  = slurmfile,
                          jobname = myms + '_flag_sum1',
                          logfile = logfile,
                          syscall = syscall)
@@ -155,7 +154,7 @@ def main():
 
              syscall = 'singularity exec '+SOURCE_FINDING_CONTAINER+' '
              syscall += 'python ' + cwd + '/delta_src_fnd.py ' + myms + ' ' + str(isl) + ' ' + str(pix) + ' ' + img_name + '\n'
-             gen.write_slurm(opfile  = slurmfile,
+             beta.write_slurm(opfile  = slurmfile,
                              jobname = myms+'_bdsf',
                              logfile = logfile,
                              syscall = syscall)
@@ -178,7 +177,7 @@ def main():
          slurmfile = SCRIPTS + '/' + myms+'_wsclean_data.sh' # name of the slurm file # there needs to be one of these for all the ms files
          logfile   = LOGS    + '/' + myms+'_wsclean_data.log'  # name of log file # loop over this
          syscall   = 'singularity exec '+WSCLEAN_CONTAINER+' ' # loop over this
-         syscall  += gen.generate_syscall_wsclean(mslist = [myms_ext], # loop over this
+         syscall  += beta.generate_syscall_wsclean(mslist = [myms_ext], # loop over this
                                                  imgname = blind_prefix,
                                                  datacol = 'DATA',
                                             minuvw_range = min_uvw,
@@ -187,7 +186,7 @@ def main():
 
 
          # This is what actually generates the command in a bash file
-         gen.write_slurm(opfile = slurmfile,
+         beta.write_slurm(opfile = slurmfile,
                         jobname = myms + '_data',
                         logfile = logfile,
                         syscall = syscall)
@@ -210,12 +209,12 @@ def main():
          slurmfile = SCRIPTS + '/' + myms+'_predict.sh' # name of the slurm file
          logfile   = LOGS + '/' + myms+'_predict.log'   # name of log file
          syscall   = 'singularity exec ' + WSCLEAN_CONTAINER + ' '  # for each of the msfiles
-         syscall  += gen.generate_syscall_predict(msname = myms_ext,
+         syscall  += beta.generate_syscall_predict(msname = myms_ext,
                                                 imgbase = blind_prefix)
 
 
          # This is what actually generates the command in a bash file
-         gen.write_slurm(opfile = slurmfile,
+         beta.write_slurm(opfile = slurmfile,
                         jobname = myms + '_predict',
                         logfile = logfile,
                         syscall = syscall)
@@ -232,7 +231,7 @@ def main():
 
          syscall   = 'singularity exec '+CASA_CONTAINER+' '
          syscall  += 'casa -c ' + cwd + '/epsilon_selfcal_target_phases.py ' + myms_ext + ' ' + uv_range + ' --nologger --log2term --nogui\n'
-         gen.write_slurm(opfile   = slurmfile,
+         beta.write_slurm(opfile   = slurmfile,
                          jobname  = myms+'_phase_cal',
                          logfile  = logfile,
                          syscall  = syscall)
@@ -249,7 +248,7 @@ def main():
 
          syscall  = 'singularity exec '+CASA_CONTAINER+' '
          syscall += 'casa -c ' + cwd + '/gamma_flag_summary.py ' + myms_ext + ' --nologger --log2term --nogui\n'
-         gen.write_slurm(opfile = slurmfile,
+         beta.write_slurm(opfile = slurmfile,
                         jobname = myms+'_flag_sum2',
                         logfile = logfile,
                         syscall = syscall)
@@ -270,7 +269,7 @@ def main():
          logfile   = LOGS + '/' + myms+'_wsclean_correct.log'  # name of log file
 
          syscall  = 'singularity exec '+WSCLEAN_CONTAINER+' '
-         syscall += gen.generate_syscall_wsclean(mslist       = [myms_ext],
+         syscall += beta.generate_syscall_wsclean(mslist       = [myms_ext],
                                                  imgname      = pcal_prefix,
                                                  datacol      = 'CORRECTED_DATA',
                                                  minuvw_range = min_uvw,
@@ -278,7 +277,7 @@ def main():
                                                  mask         = MASK_DIR + '/' + fitsmask)
 
          # call function that writes the header info of a bash script
-         gen.write_slurm(opfile  = slurmfile,
+         beta.write_slurm(opfile  = slurmfile,
                          jobname = myms + '_wcorr',
                          logfile = logfile,
                          syscall = syscall)
@@ -297,12 +296,12 @@ def main():
 
          # write headings to image data file
          image_data = IMG_STATS + '/' + myms + '_img_stat.dat'
-         gen.write_table(opfile = image_data)
+         beta.write_table(opfile = image_data)
 
          #
          syscall = 'singularity exec '+CASA_CONTAINER+' '
          syscall += 'casa -c ' + cwd + '/zeta_image_stats.py ' + pcal_prefix + '-MFS-image.fits' + ' ' + myms + ' --nologger --log2term --nogui\n'
-         gen.write_slurm(opfile  = slurmfile,
+         beta.write_slurm(opfile  = slurmfile,
                          jobname = myms+'_img_stat',
                          logfile = logfile,
                          syscall = syscall)
@@ -321,7 +320,7 @@ def main():
          bash_command ='mv casa*.log ipython*.log ./casa_junk/ && mv *.py ./engine_scripts && find ./ -empty -delete -print &>removed_logs.txt' 
 
          # write the slurm file
-         gen.write_slurm(opfile  = slurmfile,
+         beta.write_slurm(opfile  = slurmfile,
                          jobname = myms + '_clean_up',
                          logfile = logfile,
                          syscall = bash_command)
