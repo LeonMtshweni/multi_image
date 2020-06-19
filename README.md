@@ -1,4 +1,4 @@
-# Imaging Radio Interferometeric data via brute force (IRIBF)
+# Imaging Radio Interferometeric data via brute force (IRIvBF)
 
 How to run the pipeline
 `python <script_name> <ms_name> <uvrange> <mask_type/mask_list> <minuvw-m> <bdsdf_params> <og_data>`
