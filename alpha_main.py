@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os, sys
 from os import path
-import _setup as beta
+import beta_setup as beta
 import glob
 import shutil
 
@@ -80,7 +80,7 @@ def main():
          # Make Copies of Data
 
          # name of slurm and the campanying log file to be executed
-         slurmfile = SCRIPTS  + '/' + myms+'_cp.sh' # name of the slurm file # loop
+         bash_script = SCRIPTS  + '/' + myms+'_cp.sh' # name of the slurm file # loop
          logfile   = LOGS     + '/' + myms+'_cp.log'  # name of log file # loop
 
 
@@ -111,31 +111,31 @@ def main():
            bash_command = 'cp -r ' + src + ' ' + dst # + '.' + extension 
 
            # write the slurm file
-           beta.write_slurm(opfile  = slurmfile,
-                           jobname = myms+'_cp',
+           beta.write_slurm(opfile = bash_script,
+                           jobname = 'cp_' + myms,
                            logfile = logfile,
                            syscall = bash_command) 
            
            # slurm job name
            job_id_copy = 'cp_' + myms 
-           syscall     = job_id_copy + "=`sbatch "+slurmfile+" | awk '{print $4}'`"
+           syscall     = job_id_copy + "=`sbatch "+bash_script+" | awk '{print $4}'`"
            f.write(syscall+'\n')
 
          #-------------------------------------------------------------------------------
          # Flag Summary, First
 
-         slurmfile = SCRIPTS  + '/' + myms+'_flag_sum1.sh' # name of the slurm file
+         bash_script = SCRIPTS  + '/' + myms+'_flag_sum1.sh' # name of the slurm file
          logfile   = LOGS     + '/' + myms+'_flag_sum1.log'  # name of log file
 
          syscall  = 'singularity exec '+CASA_CONTAINER+' '
          syscall += 'casa -c ' + cwd + '/gamma_flag_summary.py ' + myms_ext + ' --nologger --log2term --nogui\n'
-         beta.write_slurm(opfile  = slurmfile,
-                         jobname = myms + '_flag_sum1',
+         beta.write_slurm(opfile  = bash_script,
+                         jobname = 'flag_sum1_' + myms,
                          logfile = logfile,
                          syscall = syscall)
 
          job_id_flag_sum1 = 'FLAG_SUM1_' + myms
-         syscall = job_id_flag_sum1 + "=`sbatch -d afterok:${"+job_id_copy+"} "+slurmfile+" | awk '{print $4}'`"
+         syscall = job_id_flag_sum1 + "=`sbatch -d afterok:${"+job_id_copy+"} "+bash_script+" | awk '{print $4}'`"
          f.write(syscall+'\n')
 
          #------------------------------------------------------------------------------
@@ -149,32 +149,34 @@ def main():
              # fetch the mask from current directory
              img_name = glob.glob('masking_dummy.fits')[0]
 
-             slurmfile = SCRIPTS  + '/' + myms + '_mask.sh' # name of the slurm file
+             bash_script = SCRIPTS  + '/' + myms + '_mask.sh' # name of the slurm file
              logfile   = LOGS     + '/' + myms + '_mask.log'  # name of log file
 
              syscall = 'singularity exec '+SOURCE_FINDING_CONTAINER+' '
              syscall += 'python ' + cwd + '/delta_src_fnd.py ' + myms + ' ' + str(isl) + ' ' + str(pix) + ' ' + img_name + '\n'
-             beta.write_slurm(opfile  = slurmfile,
-                             jobname = myms+'_bdsf',
+             beta.write_slurm(opfile  = bash_script,
+                             jobname = 'bdsf_' + myms,
                              logfile = logfile,
                              syscall = syscall)
 
              # set the newly created mask as the fitsmask
              fitsmask    = cwd + '/bdsf/' + myms + '_bdsf_mask.fits' 
              job_id_bdsf = 'BDSF_' +myms
-             syscall     = job_id_bdsf + "=`sbatch -d afterok:${"+job_id_flag_sum1+"} "+slurmfile+" | awk '{print $4}'`"
+             syscall     = job_id_bdsf + "=`sbatch -d afterok:${"+job_id_flag_sum1+"} "+bash_script+" | awk '{print $4}'`"
              f.write(syscall+'\n')
 
 
          #------------------------------------------------------------------------------
          # Automask wsclean
 
-         # make sure wsclean knows where to find the mask if fitsmask option is selected
-         if fitsmask != 'auto':
-              fitsmask = MASK_DIR + '/' + fitsmask          
+         # choose appropriate fitsmask for run
+         if path.exists(fitsmask):
+             fitsmask = fitsmask
+         else:
+             fitsmask = 'auto'        
 
          # This sets up the command for wsclean
-         slurmfile = SCRIPTS + '/' + myms+'_wsclean_data.sh' # name of the slurm file # there needs to be one of these for all the ms files
+         bash_script = SCRIPTS + '/' + myms+'_wsclean_data.sh' # name of the slurm file # there needs to be one of these for all the ms files
          logfile   = LOGS    + '/' + myms+'_wsclean_data.log'  # name of log file # loop over this
          syscall   = 'singularity exec '+WSCLEAN_CONTAINER+' ' # loop over this
          syscall  += beta.generate_syscall_wsclean(mslist = [myms_ext], # loop over this
@@ -186,8 +188,8 @@ def main():
 
 
          # This is what actually generates the command in a bash file
-         beta.write_slurm(opfile = slurmfile,
-                        jobname = myms + '_data',
+         beta.write_slurm(opfile = bash_script,
+                        jobname = 'data_' + myms,
                         logfile = logfile,
                         syscall = syscall)
 
@@ -196,17 +198,17 @@ def main():
          dummy_var = fitsmask
          if fitsmask == dummy_var:
              job_id_blind = 'DATA_' + myms 
-             syscall = job_id_blind+"=`sbatch -d afterok:${"+job_id_bdsf+"} "+slurmfile+" | awk '{print $4}'`"
+             syscall = job_id_blind+"=`sbatch -d afterok:${"+job_id_bdsf+"} "+bash_script+" | awk '{print $4}'`"
              f.write(syscall+'\n')
          else:
              job_id_blind = 'DATA_' + myms
-             syscall = job_id_blind+"=`sbatch -d afterok:${"+job_id_flag_sum1+"} "+slurmfile+" | awk '{print $4}'`"
+             syscall = job_id_blind+"=`sbatch -d afterok:${"+job_id_flag_sum1+"} "+bash_script+" | awk '{print $4}'`"
              f.write(syscall+'\n')
 
          # ------------------------------------------------------------------------------
          # Predict
 
-         slurmfile = SCRIPTS + '/' + myms+'_predict.sh' # name of the slurm file
+         bash_script = SCRIPTS + '/' + myms+'_predict.sh' # name of the slurm file
          logfile   = LOGS + '/' + myms+'_predict.log'   # name of log file
          syscall   = 'singularity exec ' + WSCLEAN_CONTAINER + ' '  # for each of the msfiles
          syscall  += beta.generate_syscall_predict(msname = myms_ext,
@@ -214,85 +216,87 @@ def main():
 
 
          # This is what actually generates the command in a bash file
-         beta.write_slurm(opfile = slurmfile,
-                        jobname = myms + '_predict',
+         beta.write_slurm(opfile = bash_script,
+                        jobname = 'predict_' + myms,
                         logfile = logfile,
                         syscall = syscall)
  
          job_id_predict1 = 'PREDICT_' + myms
-         syscall = job_id_predict1 + "=`sbatch -d afterok:${"+job_id_blind+"} "+slurmfile+" | awk '{print $4}'`"
+         syscall = job_id_predict1 + "=`sbatch -d afterok:${"+job_id_blind+"} "+bash_script+" | awk '{print $4}'`"
          f.write(syscall+'\n') # loop
 
          # ------------------------------------------------------------------------------
          # Self-calibrate phases
 
-         slurmfile = SCRIPTS + '/' + myms + '_phase_cal.sh' # name of the slurm file
+         bash_script = SCRIPTS + '/' + myms + '_phase_cal.sh' # name of the slurm file
          logfile   = LOGS + '/' + myms + '_phase_cal.log'  # name of log file
 
          syscall   = 'singularity exec '+CASA_CONTAINER+' '
          syscall  += 'casa -c ' + cwd + '/epsilon_selfcal_target_phases.py ' + myms_ext + ' ' + uv_range + ' --nologger --log2term --nogui\n'
-         beta.write_slurm(opfile   = slurmfile,
-                         jobname  = myms+'_phase_cal',
+         beta.write_slurm(opfile  = bash_script,
+                         jobname  = 'phase_cal_' + myms,
                          logfile  = logfile,
                          syscall  = syscall)
 
          job_id_phasecal1 = 'PHASECAL_' + myms
-         syscall = job_id_phasecal1 + "=`sbatch -d afterok:${"+job_id_predict1+"} "+slurmfile+" | awk '{print $4}'`"
+         syscall = job_id_phasecal1 + "=`sbatch -d afterok:${"+job_id_predict1+"} "+bash_script+" | awk '{print $4}'`"
          f.write(syscall+'\n')
          
          # ------------------------------------------------------------------------------
          # Flag Summary, Second
 
-         slurmfile = SCRIPTS + '/' + myms + '_flag_sum2.sh' # name of the slurm file
+         bash_script = SCRIPTS + '/' + myms + '_flag_sum2.sh' # name of the slurm file
          logfile   = LOGS + '/' + myms + '_flag_sum2.log'  # name of log file
 
          syscall  = 'singularity exec '+CASA_CONTAINER+' '
          syscall += 'casa -c ' + cwd + '/gamma_flag_summary.py ' + myms_ext + ' --nologger --log2term --nogui\n'
-         beta.write_slurm(opfile = slurmfile,
-                        jobname = myms+'_flag_sum2',
-                        logfile = logfile,
-                        syscall = syscall)
+         beta.write_slurm(opfile = bash_script,
+                         jobname = 'flag_sum2_' + myms,
+                         logfile = logfile,
+                         syscall = syscall)
 
          job_id_flag_sum2 = 'FLAG_SUM2_' + myms
-         syscall = job_id_flag_sum2 + "=`sbatch -d afterok:${"+job_id_phasecal1+"} "+slurmfile+" | awk '{print $4}'`"
+         syscall = job_id_flag_sum2 + "=`sbatch -d afterok:${"+job_id_phasecal1+"} "+bash_script+" | awk '{print $4}'`"
          f.write(syscall+'\n')
 
          # ------------------------------------------------------------------------------
          # WSCLEAN CORRECTED_DATA
 
-         # makes sure wsclean knows where to find the mask if fitsmask option is selected
-         if fitsmask != 'auto':
-             fitsmask = MASK_DIR + '/' + fitsmask
+         # choose appropriate fitsmask for run
+         if path.exists(fitsmask):
+             fitsmask = fitsmask
+         else:
+             fitsmask = 'auto'
 
          # This sets up the command for wsclean
-         slurmfile = SCRIPTS + '/' + myms+'_wsclean_correct.sh' # name of the slurm file
+         bash_script = SCRIPTS + '/' + myms+'_wsclean_correct.sh' # name of the slurm file
          logfile   = LOGS + '/' + myms+'_wsclean_correct.log'  # name of log file
 
          syscall  = 'singularity exec '+WSCLEAN_CONTAINER+' '
-         syscall += beta.generate_syscall_wsclean(mslist       = [myms_ext],
+         syscall += beta.generate_syscall_wsclean(mslist      = [myms_ext],
                                                  imgname      = pcal_prefix,
                                                  datacol      = 'CORRECTED_DATA',
                                                  minuvw_range = min_uvw,
                                                  bda          = False,
-                                                 mask         = MASK_DIR + '/' + fitsmask)
+                                                 mask         = fitsmask)
 
          # call function that writes the header info of a bash script
-         beta.write_slurm(opfile  = slurmfile,
-                         jobname = myms + '_wcorr',
-                         logfile = logfile,
-                         syscall = syscall)
+         beta.write_slurm(opfile  = bash_script,
+                          jobname = 'wcorr_' + myms,
+                          logfile = logfile,
+                          syscall = syscall)
 
 
          job_id_PCAL1 = 'CORRECT_' + myms
-         syscall = job_id_PCAL1 + "=`sbatch -d afterok:${"+job_id_flag_sum2+"} "+slurmfile+" | awk '{print $4}'`"
-         #syscall = job_id_PCAL1 + "=`sbatch "+slurmfile+" | awk '{print $4}'`"
+         syscall = job_id_PCAL1 + "=`sbatch -d afterok:${"+job_id_flag_sum2+"} "+bash_script+" | awk '{print $4}'`"
+         #syscall = job_id_PCAL1 + "=`sbatch "+bash_script+" | awk '{print $4}'`"
          f.write(syscall+'\n')
 
          # ------------------------------------------------------------------------------
          # Image statistics, First
 
-         slurmfile = SCRIPTS + '/' + myms+'_img_stat.sh' # name of the slurm file
-         logfile   = LOGS + '/' + myms+'_img_stat.log'  # name of log file
+         bash_script = SCRIPTS + '/' + myms+'_img_stat.sh'
+         logfile   = LOGS + '/' + myms+'_img_stat.log'  
 
          # write headings to image data file
          image_data = IMG_STATS + '/' + myms + '_img_stat.dat'
@@ -301,37 +305,38 @@ def main():
          #
          syscall = 'singularity exec '+CASA_CONTAINER+' '
          syscall += 'casa -c ' + cwd + '/zeta_image_stats.py ' + pcal_prefix + '-MFS-image.fits' + ' ' + myms + ' --nologger --log2term --nogui\n'
-         beta.write_slurm(opfile  = slurmfile,
-                         jobname = myms+'_img_stat',
-                         logfile = logfile,
-                         syscall = syscall)
+         beta.write_slurm(opfile  = bash_script,
+                          jobname = 'img_stat_' + myms,
+                          logfile = logfile,
+                          syscall = syscall)
 
          job_id_im_stat1 = 'IMG_STAT_' + myms
-         syscall = job_id_im_stat1+"=`sbatch -d afterok:${"+job_id_PCAL1+"} "+slurmfile+" | awk '{print $4}'`"
+         syscall = job_id_im_stat1+"=`sbatch -d afterok:${"+job_id_PCAL1+"} "+bash_script+" | awk '{print $4}'`"
          f.write(syscall+'\n')
 
          #-------------------------------------------------------------------------------
          # Clean Up Empty Logging Files
 
-         slurmfile = SCRIPTS + '/' + myms+'_clean_up.sh' # name of the slurm file
+         bash_script = SCRIPTS + '/' + myms+'_clean_up.sh' # name of the slurm file
          logfile   = LOGS + '/' + myms+'_clean_up.log'  # name of log file
 
          # this variable constitutes the bash command that is gonna all the copying  
-         bash_command ='mv casa*.log ipython*.log ./casa_junk/ && mv *.py ./engine_scripts && find ./ -empty -delete -print &>removed_logs.txt' 
+         bash_command ='mv casa*.log ipython*.log *.last ./casa_junk/ && mv *.py ./IRIvBF && find ./ -empty -delete -print &>removed_logs.txt' 
 
          # write the slurm file
-         beta.write_slurm(opfile  = slurmfile,
-                         jobname = myms + '_clean_up',
+         beta.write_slurm(opfile = bash_script,
+                         jobname = 'clean_up_' + myms,
                          logfile = logfile,
                          syscall = bash_command)
 
          job_id_rem_log = 'CLEAN_UP_' + myms
-         syscall = job_id_rem_log+"=`sbatch -d afterok:${"+job_id_im_stat1+"} "+slurmfile+" | awk '{print $4}'`"
+         syscall = job_id_rem_log+"=`sbatch -d afterok:${"+job_id_im_stat1+"} "+bash_script+" | awk '{print $4}'`"
          f.write(syscall+'\n')
 
          # ------------------------------------------------------------------------------
 
-         #kill = 'echo "scancel "$'+job_id_copy+'" "$'+job_id_flag_sum1+'" "$'+job_id_blind+'" "$'+job_id_predict1+'" "$'+job_id_phasecal1+'" "$'+job_id_flag_sum2+'" "$'+job_id_PCAL1+'" "$'+job_id_im_stat1+' >> '+kill_file
+         #kill = 'echo "scancel "$'+job_id_copy+'" "$'+job_id_flag_sum1+'" "$'+job_id_blind+'" "$'+job_id_predict1+'" "$'+job_id_phasecal1+'" "$'+job_id_flag_sum2+'" "$'+job_id_PCAL1+'" "$'+job_id_im_stat1+' >> 
+'+kill_file
          #f.write(kill+'\n')
 
     f.close() # close function
