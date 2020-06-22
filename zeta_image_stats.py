@@ -1,7 +1,6 @@
 import sys, os
 import numpy as np
 
-
 # current working dir
 cwd = os.getcwd()
 # directory to dump the dat file
@@ -28,12 +27,11 @@ dynamic_range = np.abs(max_pix/min_pix)
 # get std dev
 img_sigma = fits_data['sigma'][0]
 # get image flux
-flux = fits_data['flux'][0] 
+flux = fits_data['flux'][0]
 
 # write these values to file
-file_name = data_name +'_img_dat1.txt'
+file_name = IMG_STATS + '/' +  data_name +'_img_dat1.txt'
 t = open(file_name,'a')
 #t.writelines([str(image_name) + ' ' + str(img_rms) + ' ' + str(max_pix) + ' ' + str(min_pix) + ' ' + str(flux) + '\n'])
 t.writelines([str(image_name) + ' ' + str(img_rms) + ' ' + str(dynamic_range) + ' ' + str(flux) + '\n'])
 t.close()
- 
