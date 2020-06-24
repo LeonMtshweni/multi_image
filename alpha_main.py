@@ -194,9 +194,7 @@ def main():
                         syscall = syscall)
 
          # To make sure that this job waits for the previous jobs accordingly,I'm lazily putting an if statement like I did above
-         # dummy variable for the if statement below
-         dummy_var = fitsmask
-         if fitsmask == dummy_var:
+         if path.exists(cwd + '/bdsf/' + myms + '_bdsf_mask.fits'):
              job_id_blind = 'DATA_' + myms 
              syscall = job_id_blind+"=`sbatch -d afterok:${"+job_id_bdsf+"} "+bash_script+" | awk '{print $4}'`"
              f.write(syscall+'\n')
@@ -334,9 +332,9 @@ def main():
          f.write(syscall+'\n')
 
          # ------------------------------------------------------------------------------
-
+         # not using the kill file for now
          #kill = 'echo "scancel "$'+job_id_copy+'" "$'+job_id_flag_sum1+'" "$'+job_id_blind+'" "$'+job_id_predict1+'" "$'+job_id_phasecal1+'" "$'+job_id_flag_sum2+'" "$'+job_id_PCAL1+'" "$'+job_id_im_stat1+' >> 
-'+kill_file
+         #'+kill_file
          #f.write(kill+'\n')
 
     f.close() # close function
