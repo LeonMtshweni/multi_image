@@ -5,7 +5,7 @@ myms = sys.argv[3]
 myuvrange = sys.argv[4]
 
 # fix the white space problem
-if myuvrange == 'none':
+if myuvrange == 'nill':
     myuvrange = ''
 
 gtab = myms + '_.GP0'
