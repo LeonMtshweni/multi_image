@@ -113,7 +113,7 @@ def generate_syscall_wsclean(mslist,
     syscall += '-nmiter 20 '
     syscall += '-weight briggs '+str(briggs)+' '
     syscall += '-data-column '+datacol+' '
-    if minuvw_range != ' ':
+    if minuvw_range != 'nill':
         syscall += '-minuvw-m ' + minuvw_range + ' '
     if startchan != -1 and endchan != -1:
         syscall += '-channel-range '+str(startchan)+' '+str(endchan)+' '
