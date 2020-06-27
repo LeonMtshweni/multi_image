@@ -4,34 +4,35 @@ import time
 import os
 import sys
 
-
+'''
 # generate the config file
 def config_file_gen():
     config_yaml = open('config.yaml','w')
-    config_yaml.writelines(['\ 
-    - OG_data:\n\ 
-        bckup: # name of data to copy\n\ 
-    - Duplicates:\n\
-        mslist: #names separeated by commas\n\ 
-    \n\ 
-    - UV_range:\n\ 
-        uvrange: #names separeated by commas\n\ 
-    \n\ 
-    - Masking:\n\ 
-        mask_list: #names separeated by commas\n\ 
-    \n\ 
-    - Wsclean_range:\n\ 
-        min_range:  #names separeated by commas\n\ 
-    \n\ 
-    - BDSM:\n\ 
-        bdsf_par: #pairs of two values separated by semicolons, separeated by commas\n\
-    \n\
-    - Imaging:\n\
-        robustness: #floats separeated by commas\n\
-        auto_threshold: #floats separeated by commas\n\
-        automatic_mask_size: #floats separeated by commas:
-    '])
+    config_yaml.write("\
+- OG_data:\n\
+    bckup: 1561723022_sdp_l0.full_1284.full_pol_1024ch_3C274_150MHz_64_chn_32s.ms\n\
+\n\
+- Duplicates:\n\
+    mslist: auto,auto,auto\n\
+\n\
+- UV_range:\n\
+    uvrange: nill,\>150m,\>150m\n\
+\n\
+- Masking:\n\
+    mask_list: nill,nill,nill\n\
+\n\
+- Wsclean_range:\n\
+    min_range:  nill,150,nill\n\
+\n\
+- BDSM:\n\
+    bdsf_par: nill,nill,nill\n\
+\n\
+- Imaging:\n\
+    robustness: -2.0,-1.0,-0.5\n\
+    auto_threshold: 15,10,5\n\
+    automatic_mask_size: 5,5,5") 
     config_yaml.close()
+'''
 
 # create directories to keep products
 def create_dirs():
@@ -100,6 +101,7 @@ def generate_syscall_wsclean(mslist,
                           minuvw_range,
                           briggs,
                           mask,
+                          size_auto_mask,
                           threshold_auto,
                           startchan=-1,
                           endchan=-1,
