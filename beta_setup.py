@@ -9,11 +9,10 @@ import sys
 def config_file_gen():
     config_yaml = open('config.yaml','w')
     config_yaml.writelines(['\ 
-    - general:\n\ 
-        mslist: #names separeated by commas\n\ 
-    \n\ 
     - OG_data:\n\ 
         bckup: # name of data to copy\n\ 
+    - Duplicates:\n\
+        mslist: #names separeated by commas\n\ 
     \n\ 
     - UV_range:\n\ 
         uvrange: #names separeated by commas\n\ 
@@ -25,7 +24,12 @@ def config_file_gen():
         min_range:  #names separeated by commas\n\ 
     \n\ 
     - BDSM:\n\ 
-        bdsf_par:#pairs of two separated by semicolons, separeated by commas\n\ 
+        bdsf_par: #pairs of two values separated by semicolons, separeated by commas\n\
+    \n\
+    - Imaging:\n\
+        robustness: #floats separeated by commas\n\
+        auto_threshold: #floats separeated by commas\n\
+        automatic_mask_size: #floats separeated by commas:
     '])
     config_yaml.close()
 
@@ -94,13 +98,14 @@ def generate_syscall_wsclean(mslist,
                           imgname,
                           datacol,
                           minuvw_range,
+                          briggs,
                           mask,
+                          threshold_auto,
                           startchan=-1,
                           endchan=-1,
                           chanout=8,
                           imsize=5096,
                           cellsize='1.3asec',
-                          briggs=-0.4,
                           niter=120000,
                           multiscale=True,
                           scales='10,20,30',
@@ -134,7 +139,7 @@ def generate_syscall_wsclean(mslist,
         syscall += '-multiscale-scale-bias 0.6 '
     syscall += '-niter '+str(niter)+' '
     syscall += '-gain 0.1 '
-    syscall += '-mgain 0.9 ' # leon edit
+    syscall += '-mgain 0.9 '
     syscall += '-nmiter 20 '
     syscall += '-weight briggs '+str(briggs)+' '
     syscall += '-data-column '+datacol+' '
@@ -147,8 +152,8 @@ def generate_syscall_wsclean(mslist,
     elif mask.lower() == 'none':
         syscall += ''
     elif mask.lower() == 'auto':
-        syscall += '-auto-threshold 0.3 '
-        syscall += '-auto-mask 5.0 '
+        syscall += '-auto-threshold ' +str(threshold_auto)+' '
+        syscall += '-auto-mask '+str(size_auto_mask)+' '
     syscall += '-no-small-inversion '
     syscall += '-pol I '
     syscall += '-no-negative '
