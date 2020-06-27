@@ -4,12 +4,16 @@ from os import path
 import beta_setup as beta
 import glob
 import shutil
+# yaml
+import yaml
 
 #---------------------------------------------------------------------------------------
 # path to remember
 cwd = os.getcwd()
 # crease essential directories to keep products
 beta.create_dirs()
+# generate the config file
+beta.config_file_gen()
 IDIA_CONTAINER_PATH = '/software/astro/caracal/STIMELA_IMAGES_1.6.1/'
 STIMELA_CONTAINER_PATH = '/software/astro/caracal/STIMELA_IMAGES_1.6.1/'
 #wsclean container
@@ -38,36 +42,53 @@ def main():
 
     # name of the submit file
     submit_file = 'submit_jobs.sh'
+    
+    # yaml file name
+    yaml_file = 'config.yaml'
 
     # Open file for writing
     f = open(submit_file,'w')
-
+    
+    # Read yaml file
+    YAML = open(yaml_file,'r')
+    
     # write header information
     f.write('#!/bin/bash\n')
 
+    # this is the data to be copied
+    #og_dat = sys.argv[6]
+    og_dat = YAML[0]['OG_data']['bckup']
+    
     # load the list of data to be copied
-    mslist = sys.argv[1].split(',')
+    #mslist  = sys.argv[1].split(',')
+    mslist = YAML[1]['Duplicates']['msdir'].split(',') 
 
     # list of uvrange values
-    uvlist = sys.argv[2].split(',')
+    #uvlist = sys.argv[2].split(',')
+    uvlist = YAML[2]['UV_range']['uvrange'].split(',')
 
     # list of fits masks
-    masklist = sys.argv[3].split(',')
-
+    #masklist = sys.argv[3].split(',')
+    masklist = = YAML[3]['Masking']['mask_list'].split(',')
+    
     # list of minivw
-    wsclean_uv_range = sys.argv[4].split(',')
+    #wsclean_uv_range = sys.argv[4].split(',')
+    wsclean_uv_range = YAML[4]['Wsclean_range']['min_range'].split(',')
     
     #pybdsf selection parameters
-    isl_pix_input = sys.argv[5].split(',') 
-
-    # this is the data to be copied
-    og_dat = sys.argv[6]
+    #isl_pix_input = sys.argv[5].split(',') 
+    isl_pix_input = YAML[5]['BDSM']['bdsf_par'].split(',')
+       
+    # imaging parameters
+    robustness = YAML[6]['Imaging']['robustness'].split(',')
+    auto_threshld = YAML[6]['Imaging']['auto_threshold'].split(',')
+    auto_mask_size = YAML[6]['Imaging']['automatic_mask_size'].split(',')
 
     # ms_file to be copied
     ms_path = MS_BAK_DIR + og_dat
     
     # this loop simultaneously iterates through the lists provided
-    for (myms,uv_range,fitsmask,min_uvw,isl_pix) in zip(mslist,uvlist,masklist,wsclean_uv_range,isl_pix_input):
+    for (myms,uv_range,fitsmask,min_uvw,isl_pix,rbst,auto_thresh,auto_mask) in zip(mslist,uvlist,masklist,wsclean_uv_range,isl_pix_input,robustness,auto_threshld,auto_mask_size):
 
          #image names 
          blind_prefix = MAPS  + '/' + 'img_'+myms+'_data'
@@ -141,7 +162,7 @@ def main():
          #------------------------------------------------------------------------------
          # BDSF Island Mask Export
 
-         if fitsmask == 'none':
+         if fitsmask == 'nill':
 
              # split the isl and pix into their individual variables
              isl, pix = isl_pix.split(';')
@@ -173,18 +194,21 @@ def main():
          if path.exists(fitsmask):
              fitsmask = fitsmask
          else:
-             fitsmask = 'auto'        
+             fitsmask  = 'auto'
 
          # This sets up the command for wsclean
          bash_script = SCRIPTS + '/' + myms+'_wsclean_data.sh' # name of the slurm file # there needs to be one of these for all the ms files
          logfile   = LOGS    + '/' + myms+'_wsclean_data.log'  # name of log file # loop over this
          syscall   = 'singularity exec '+WSCLEAN_CONTAINER+' ' # loop over this
-         syscall  += beta.generate_syscall_wsclean(mslist = [myms_ext], # loop over this
-                                                 imgname = blind_prefix,
-                                                 datacol = 'DATA',
-                                            minuvw_range = min_uvw,
-                                                    bda  = False,
-                                                    mask = fitsmask)
+         syscall  += beta.generate_syscall_wsclean(mslist  = [myms_ext], # loop over this
+                                                   imgname = blind_prefix,
+                                                   datacol = 'DATA',
+                                              minuvw_range = min_uvw,
+                                                    briggs = rbst,
+                                            threshold_auto = auto_thresh
+                                            size_auto_mask = auto_mask
+                                                      bda  = False,
+                                                      mask = fitsmask)
 
 
          # This is what actually generates the command in a bash file
@@ -275,6 +299,7 @@ def main():
                                                  imgname      = pcal_prefix,
                                                  datacol      = 'CORRECTED_DATA',
                                                  minuvw_range = min_uvw,
+                                                 briggs       = rbst,
                                                  bda          = False,
                                                  mask         = fitsmask)
 
@@ -337,7 +362,8 @@ def main():
          #'+kill_file
          #f.write(kill+'\n')
 
-    f.close() # close function
+    f.close()
+    YAML.close()
 
 if __name__ == "__main__":
 
