@@ -13,7 +13,7 @@ cwd = os.getcwd()
 # crease essential directories to keep products
 beta.create_dirs()
 # generate the config file
-beta.config_file_gen()
+#beta.config_file_gen()
 IDIA_CONTAINER_PATH = '/software/astro/caracal/STIMELA_IMAGES_1.6.1/'
 STIMELA_CONTAINER_PATH = '/software/astro/caracal/STIMELA_IMAGES_1.6.1/'
 #wsclean container
@@ -42,15 +42,17 @@ def main():
 
     # name of the submit file
     submit_file = 'submit_jobs.sh'
-    
-    # yaml file name
-    yaml_file = 'config.yaml'
-
     # Open file for writing
     f = open(submit_file,'w')
+
+    # yaml file name
+    yaml_file = 'config.yaml'
+    # Read in file
+    yml_file = open(yaml_file,'r')
     
     # Read yaml file
-    YAML = open(yaml_file,'r')
+    YAML = yaml.full_load(yml_file)
+vi -c 1 alpha_main.py------------------------
     
     # write header information
     f.write('#!/bin/bash\n')
@@ -58,10 +60,10 @@ def main():
     # this is the data to be copied
     #og_dat = sys.argv[6]
     og_dat = YAML[0]['OG_data']['bckup']
-    
+    print(og_dat)
     # load the list of data to be copied
     #mslist  = sys.argv[1].split(',')
-    mslist = YAML[1]['Duplicates']['msdir'].split(',') 
+    mslist = YAML[1]['Duplicates']['mslist'].split(',') 
 
     # list of uvrange values
     #uvlist = sys.argv[2].split(',')
@@ -69,7 +71,7 @@ def main():
 
     # list of fits masks
     #masklist = sys.argv[3].split(',')
-    masklist = = YAML[3]['Masking']['mask_list'].split(',')
+    masklist = YAML[3]['Masking']['mask_list'].split(',')
     
     # list of minivw
     #wsclean_uv_range = sys.argv[4].split(',')
@@ -162,7 +164,7 @@ def main():
          #------------------------------------------------------------------------------
          # BDSF Island Mask Export
 
-         if fitsmask == 'nill':
+         if path.exists(cwd+ '/dummy_mask.fits'): #fitsmask == 'nill':
 
              # split the isl and pix into their individual variables
              isl, pix = isl_pix.split(';')
@@ -205,8 +207,8 @@ def main():
                                                    datacol = 'DATA',
                                               minuvw_range = min_uvw,
                                                     briggs = rbst,
-                                            threshold_auto = auto_thresh
-                                            size_auto_mask = auto_mask
+                                            threshold_auto = auto_thresh,
+                                            size_auto_mask = auto_mask,
                                                       bda  = False,
                                                       mask = fitsmask)
 
@@ -299,7 +301,9 @@ def main():
                                                  imgname      = pcal_prefix,
                                                  datacol      = 'CORRECTED_DATA',
                                                  minuvw_range = min_uvw,
-                                                 briggs       = rbst,
+                                                       briggs = rbst,
+                                               threshold_auto = auto_thresh,
+                                               size_auto_mask = auto_mask,
                                                  bda          = False,
                                                  mask         = fitsmask)
 
@@ -358,12 +362,13 @@ def main():
 
          # ------------------------------------------------------------------------------
          # not using the kill file for now
-         #kill = 'echo "scancel "$'+job_id_copy+'" "$'+job_id_flag_sum1+'" "$'+job_id_blind+'" "$'+job_id_predict1+'" "$'+job_id_phasecal1+'" "$'+job_id_flag_sum2+'" "$'+job_id_PCAL1+'" "$'+job_id_im_stat1+' >> 
+         #kill = 'echo "scancel "$'+job_id_copy+'" "$'+job_id_flag_sum1+'" "$'+job_id_blind+'" "$'+job_id_predict1+'" "$'+job_id_phasecal1+'" "$'+job_id_flag_sum2+'" "$'+job_id_PCAL1+'" "$'
++job_id_im_stat1+' >> 
          #'+kill_file
          #f.write(kill+'\n')
 
     f.close()
-    YAML.close()
+    yml_file.close()
 
 if __name__ == "__main__":
 
