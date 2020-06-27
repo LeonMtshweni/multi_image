@@ -52,7 +52,6 @@ def main():
     
     # Read yaml file
     YAML = yaml.full_load(yml_file)
-vi -c 1 alpha_main.py------------------------
     
     # write header information
     f.write('#!/bin/bash\n')
