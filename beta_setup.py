@@ -4,6 +4,31 @@ import time
 import os
 import sys
 
+
+# generate the config file
+def config_file_gen():
+    config_yaml = open('config.yaml','w')
+    config_yaml.writelines(['\ 
+    - general:\n\ 
+        mslist: #names separeated by commas\n\ 
+    \n\ 
+    - OG_data:\n\ 
+        bckup: # name of data to copy\n\ 
+    \n\ 
+    - UV_range:\n\ 
+        uvrange: #names separeated by commas\n\ 
+    \n\ 
+    - Masking:\n\ 
+        mask_list: #names separeated by commas\n\ 
+    \n\ 
+    - Wsclean_range:\n\ 
+        min_range:  #names separeated by commas\n\ 
+    \n\ 
+    - BDSM:\n\ 
+        bdsf_par:#pairs of two separated by semicolons, separeated by commas\n\ 
+    '])
+    config_yaml.close()
+
 # create directories to keep products
 def create_dirs():
 
