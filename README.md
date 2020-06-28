@@ -1,5 +1,49 @@
 # Imaging Radio Interferometeric data via brute force (IRIvBF)
 
+The config file takes commas separated values
+Config file Method
+- OG_data: 
+    bckup: 
+
+This handles itself, for the most part, just remember to have the correct ms file name
+- Duplicates:
+    mslist: 
+Give intuitive names to these ms files, names that’ll be reminiscent of the experiments in which they’re running.
+Leave out the “.ms” bit of the name the code knows to attach it
+
+- UV_range:
+    uvrange: 
+Should you not want to enable this feature give the value nill
+ For specific uvrange give the appropriate minimum as follows \>1000,\>1km, etc
+
+
+- Masking:
+    Mask_list:
+Leave these in the experiment’s parent directory, appropriately named
+Give the value “auto” for auto-masking
+Give the value “nill” to create a mask using BDSF/BDSM
+
+- Wsclean_range:
+    min_range:
+Should you not want to enable this feature give the value nill
+Specify value without units (takes meters only)
+
+- BDSM:
+    bdsf_par: 
+Should you not want to enable this feature give the value nill
+Leave these in the experiment’s parent directory, appropriately renamed to dummy_mask.fits
+A single entry requires two numbers. Like all the other options are entered as a comma-separated list but a single entry will require two int values separated by a semicolon. 
+For two ms file runs we’d have: ‘3;5’,’1;3’.if you wish not to specify this parameter use the command ‘none;none’ for each ms entry
+
+
+- Imaging:
+    robustness: -2.0,-1.0,0.0
+    auto_threshold: 3,3,3
+    automatic_mask_size: 5,5,5
+    
+#########################################
+# everything below this text is depricated
+##########################################
 How to run the pipeline
 `python <script_name> <ms_name> <uvrange> <mask_type/mask_list> <minuvw-m> <bdsdf_params> <og_data>`
 
