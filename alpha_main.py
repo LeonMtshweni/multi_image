@@ -359,7 +359,7 @@ def main():
          logfile   = LOGS + '/' + myms+'_clean_up.log'  # name of log file
 
          # this variable constitutes the bash command that is gonna all the copying  
-         bash_command ='mv casa*.log ipython*.log *.last ./casa_junk/ && mv *.py ./IRIvBF && find ./ -empty -delete -print &>removed_logs.txt' 
+         bash_command ='mv casa*.log ipython* *.last ./casa_junk/ && mv *.py README.md clean_up submit_job.sh config.yaml ./IRIvBF && find ./ -empty -delete -print &>removed_logs.txt' 
 
          # write the slurm file
          beta.write_slurm(opfile = bash_script,
