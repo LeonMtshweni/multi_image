@@ -99,7 +99,7 @@ def main():
          kill_file = 'kill_job_'+ myms +'.sh'
             
          # Write header information to the file
-         kill_file.writelines('scancel ')
+         kill_file.writelines('echo "scancel "')
          
          #-------------------------------------------------------------------------------
          # Make Copies of Data
@@ -148,7 +148,7 @@ def main():
            f.write(syscall+'\n')
         
            # write job name into the current dataset's kill file
-           kill_file.writelines(job_id_copy + ' ')
+           kill_file.writelines('$' + job_id_copy + '" "')
 
          #-------------------------------------------------------------------------------
          # Flag Summary, First
@@ -170,8 +170,7 @@ def main():
         
          # write job name into the current dataset's kill file
          #kill = 'echo "scancel "$'+job_id_copy+'" "$'+job_id_flag_sum1+'" "$'+job_id_blind+'" "$'+job_id_predict1+'" "$'+job_id_phasecal1+'" "$'+job_id_flag_sum2+'" "$'+job_id_PCAL1+'" "$'
-         kill_file.writelines('$'+ job_id_flag_sum1 + ' ')
-
+         kill_file.writelines('$' + job_id_flag_sum1 + '" "')
          #------------------------------------------------------------------------------
          # BDSF Island Mask Export
 
@@ -201,7 +200,7 @@ def main():
              f.write(syscall+'\n')
                 
              # write job name into the current dataset's kill file
-             kill_file.writelines('$'+ job_id_bdsf + ' ')
+             kill_file.writelines('$' + job_id_bdsf + '" "')
 
          #------------------------------------------------------------------------------
          # Automask wsclean
@@ -247,7 +246,7 @@ def main():
              f.write(syscall+'\n')
          
          # write job name into the current dataset's kill file
-         kill_file.writelines('$'+ job_id_blind + ' ')
+         kill_file.writelines('$' + job_id_blind + '" "')
          # ------------------------------------------------------------------------------
          # Predict
 
@@ -270,7 +269,7 @@ def main():
          f.write(syscall+'\n')
          
          # write job name into the current dataset's kill file
-         kill_file.writelines('$'+ job_id_predict1 + ' ')
+         kill_file.writelines('$' + job_id_predict1 + '" "')
 
          # ------------------------------------------------------------------------------
          # Self-calibrate phases
@@ -291,7 +290,7 @@ def main():
          f.write(syscall+'\n')
         
          # write job name into the current dataset's kill file
-         kill_file.writelines('$'+ job_id_phasecal1 + ' ')
+         kill_file.writelines('$' + job_id_phasecal1 + '" "')
          
          # ------------------------------------------------------------------------------
          # Flag Summary, Second
@@ -312,7 +311,7 @@ def main():
          f.write(syscall+'\n')
          
          # write job name into the current dataset's kill file
-         kill_file.writelines('$'+ job_id_flag_sum2 + ' ')        
+         kill_file.writelines('$' + job_id_flag_sum2 + '" "')
          # ------------------------------------------------------------------------------
          # WSCLEAN CORRECTED_DATA
 
@@ -350,7 +349,7 @@ def main():
          f.write(syscall+'\n')
         
          # write job name into the current dataset's kill file
-         kill_file.writelines('$'+ job_id_PCAL1 + ' ')        
+         kill_file.writelines('$' + job_id_PCAL1 + '" "')
     
          # ------------------------------------------------------------------------------
          # Image statistics, First
@@ -376,7 +375,7 @@ def main():
          f.write(syscall+'\n')
 
          # write job name into the current dataset's kill file
-         kill_file.writelines('$'+ job_id_im_stat1 + ' ')        
+         kill_file.writelines('$' + job_id_im_stat1 + '" "')
 
          #-------------------------------------------------------------------------------
          # Clean Up Empty Logging Files
@@ -399,15 +398,13 @@ def main():
          f.write(syscall+'\n')
 
          # write job name into the current dataset's kill file
-         kill_file.writelines('$'+ job_id_rem_log + ' ')        
+         kill_file.writelines('$' + job_id_rem_log + '" "')
 
          # ------------------------------------------------------------------------------
 
-         #kill = 'echo "scancel "$'+job_id_copy+'" "$'+job_id_flag_sum1+'" "$'+job_id_blind+'" "$'+job_id_predict1+'" "$'+job_id_phasecal1+'" "$'+job_id_flag_sum2+'" "$'+job_id_PCAL1+'" "$'
-         #+job_id_im_stat1+' >> 
-         #'+kill_file
-         #f.write(kill+'\n')
-
+    # write the command to the submit file
+    kill= '> ' + kill_file + '\n'
+    f.write(kill)
     # Close all the open files
     f.close()
     yml_file.close()
