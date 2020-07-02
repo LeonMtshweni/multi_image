@@ -96,8 +96,11 @@ def main():
          pcal_prefix  = MAPS  + '/' + 'img_'+myms+'_pcal' 
 
          # Murder file for each of the ms copies
-         kill_file = 'kill_job_'+ myms +'.sh'
-            
+         teminator = 'kill_job_'+ myms +'.sh'
+         
+         # Open the file for writing
+         kill_file = open('terminator','w')
+         
          # Write header information to the file
          kill_file.writelines('echo "scancel "')
          
