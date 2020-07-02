@@ -95,8 +95,11 @@ def main():
          blind_prefix = MAPS  + '/' + 'img_'+myms+'_data'
          pcal_prefix  = MAPS  + '/' + 'img_'+myms+'_pcal' 
 
-         # job kill file for each of the datasets
-         kill_file = SCRIPTS  + '/' + 'kill_jobs_'+ myms +'.sh'
+         # Murder file for each of the ms copies
+         kill_file = 'kill_job_'+ myms +'.sh'
+            
+         # Write header information to the file
+         kill_file.write('scancel ')
          
          #-------------------------------------------------------------------------------
          # Make Copies of Data
@@ -141,7 +144,11 @@ def main():
            # slurm job name
            job_id_copy = 'cp_' + myms 
            syscall     = job_id_copy + "=`sbatch "+bash_script+" | awk '{print $4}'`"
+           # write the syscall command to the submit file
            f.write(syscall+'\n')
+        
+           # write job name into the current dataset's kill file
+           kill_file.write(job_id_copy + ' ')
 
          #-------------------------------------------------------------------------------
          # Flag Summary, First
@@ -158,7 +165,12 @@ def main():
 
          job_id_flag_sum1 = 'FLAG_SUM1_' + myms
          syscall = job_id_flag_sum1 + "=`sbatch -d afterok:${"+job_id_copy+"} "+bash_script+" | awk '{print $4}'`"
+         # write the syscall command to the submit file
          f.write(syscall+'\n')
+        
+         # write job name into the current dataset's kill file
+         #kill = 'echo "scancel "$'+job_id_copy+'" "$'+job_id_flag_sum1+'" "$'+job_id_blind+'" "$'+job_id_predict1+'" "$'+job_id_phasecal1+'" "$'+job_id_flag_sum2+'" "$'+job_id_PCAL1+'" "$'
+         kill_file.write('$'+ job_id_flag_sum1 + ' ')
 
          #------------------------------------------------------------------------------
          # BDSF Island Mask Export
@@ -185,8 +197,11 @@ def main():
              fitsmask    = cwd + '/bdsf/' + myms + '_bdsf_mask.fits' 
              job_id_bdsf = 'BDSF_' +myms
              syscall     = job_id_bdsf + "=`sbatch -d afterok:${"+job_id_flag_sum1+"} "+bash_script+" | awk '{print $4}'`"
+             # write the syscall command to the submit file
              f.write(syscall+'\n')
-
+                
+             # write job name into the current dataset's kill file
+             kill_file.write('$'+ job_id_bdsf + ' ')
 
          #------------------------------------------------------------------------------
          # Automask wsclean
@@ -222,12 +237,17 @@ def main():
          if path.exists(cwd + '/bdsf/' + myms + '_bdsf_mask.fits'):
              job_id_blind = 'DATA_' + myms 
              syscall = job_id_blind+"=`sbatch -d afterok:${"+job_id_bdsf+"} "+bash_script+" | awk '{print $4}'`"
+             # write the syscall command to the submit file
              f.write(syscall+'\n')
+             
          else:
              job_id_blind = 'DATA_' + myms
              syscall = job_id_blind+"=`sbatch -d afterok:${"+job_id_flag_sum1+"} "+bash_script+" | awk '{print $4}'`"
+             # write the syscall command to the submit file
              f.write(syscall+'\n')
-
+         
+         # write job name into the current dataset's kill file
+         kill_file.write('$'+ job_id_blind + ' ')
          # ------------------------------------------------------------------------------
          # Predict
 
@@ -246,7 +266,11 @@ def main():
  
          job_id_predict1 = 'PREDICT_' + myms
          syscall = job_id_predict1 + "=`sbatch -d afterok:${"+job_id_blind+"} "+bash_script+" | awk '{print $4}'`"
-         f.write(syscall+'\n') # loop
+         # write the syscall command to the submit file
+         f.write(syscall+'\n')
+         
+         # write job name into the current dataset's kill file
+         kill_file.write('$'+ job_id_predict1 + ' ')
 
          # ------------------------------------------------------------------------------
          # Self-calibrate phases
@@ -263,7 +287,11 @@ def main():
 
          job_id_phasecal1 = 'PHASECAL_' + myms
          syscall = job_id_phasecal1 + "=`sbatch -d afterok:${"+job_id_predict1+"} "+bash_script+" | awk '{print $4}'`"
+         # write the syscall command to the submit file
          f.write(syscall+'\n')
+        
+         # write job name into the current dataset's kill file
+         kill_file.write('$'+ job_id_phasecal1 + ' ')
          
          # ------------------------------------------------------------------------------
          # Flag Summary, Second
@@ -280,8 +308,11 @@ def main():
 
          job_id_flag_sum2 = 'FLAG_SUM2_' + myms
          syscall = job_id_flag_sum2 + "=`sbatch -d afterok:${"+job_id_phasecal1+"} "+bash_script+" | awk '{print $4}'`"
+         # write the syscall command to the submit file
          f.write(syscall+'\n')
-
+         
+         # write job name into the current dataset's kill file
+         kill_file.write('$'+ job_id_flag_sum2 + ' ')        
          # ------------------------------------------------------------------------------
          # WSCLEAN CORRECTED_DATA
 
@@ -315,9 +346,12 @@ def main():
 
          job_id_PCAL1 = 'CORRECT_' + myms
          syscall = job_id_PCAL1 + "=`sbatch -d afterok:${"+job_id_flag_sum2+"} "+bash_script+" | awk '{print $4}'`"
-         #syscall = job_id_PCAL1 + "=`sbatch "+bash_script+" | awk '{print $4}'`"
+         # write the syscall command to the submit file
          f.write(syscall+'\n')
-
+        
+         # write job name into the current dataset's kill file
+         kill_file.write('$'+ job_id_PCAL1 + ' ')        
+    
          # ------------------------------------------------------------------------------
          # Image statistics, First
 
@@ -338,7 +372,11 @@ def main():
 
          job_id_im_stat1 = 'IMG_STAT_' + myms
          syscall = job_id_im_stat1+"=`sbatch -d afterok:${"+job_id_PCAL1+"} "+bash_script+" | awk '{print $4}'`"
+         # write the syscall command to the submit file
          f.write(syscall+'\n')
+
+         # write job name into the current dataset's kill file
+         kill_file.write('$'+ job_id_im_stat1 + ' ')        
 
          #-------------------------------------------------------------------------------
          # Clean Up Empty Logging Files
@@ -357,18 +395,24 @@ def main():
 
          job_id_rem_log = 'CLEAN_UP_' + myms
          syscall = job_id_rem_log+"=`sbatch -d afterok:${"+job_id_im_stat1+"} "+bash_script+" | awk '{print $4}'`"
+         # write the syscall command to the submit file
          f.write(syscall+'\n')
 
+         # write job name into the current dataset's kill file
+         kill_file.write('$'+ job_id_rem_log + ' ')        
+
          # ------------------------------------------------------------------------------
-         # not using the kill file for now
+
          #kill = 'echo "scancel "$'+job_id_copy+'" "$'+job_id_flag_sum1+'" "$'+job_id_blind+'" "$'+job_id_predict1+'" "$'+job_id_phasecal1+'" "$'+job_id_flag_sum2+'" "$'+job_id_PCAL1+'" "$'
          #+job_id_im_stat1+' >> 
          #'+kill_file
          #f.write(kill+'\n')
 
+    # Close all the open files
     f.close()
     yml_file.close()
-
+    kill_file.close()
+    
 if __name__ == "__main__":
 
 
