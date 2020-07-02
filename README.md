@@ -1,77 +1,49 @@
 # Imaging Radio Interferometeric data via brute force (IRIvBF)
-![IRIvBF](https://github.com/LeonMtshweni/IRIvBF/blob/master/IRIvBF.jpeg)
 
-The config file takes commas separated values
-Config file Method
-- OG_data: 
-    bckup: 
+---
+---
+![IRIvBF](IRIvBF.jpeg)
+---
+* A collection of python scripts that perform parallel Multi-Frequency Synthesis imaging jobs with various imaging and selfcal parameters.
+* IRIvBF draws inspiration from [oxkat](https://github.com/IanHeywood/oxkat)
+* Runs on a slurm cluter
 
-This handles itself, for the most part, just remember to have the correct ms file name
-- Duplicates:
-    mslist: 
-Give intuitive names to these ms files, names that’ll be reminiscent of the experiments in which they’re running.
-Leave out the “.ms” bit of the name the code knows to attach it
+---
+# Take Note
+* The pipeline makes use of the following software:
+```
+[CASA](https://casa.nrao.edu/docs/TaskRef/TaskRef.html)
+[Wsclean](https://sourceforge.net/p/wsclean/wiki/Home/)
+[Aimfast](https://aimfast.readthedocs.io/en/master/intro.html)
+[pyBDSF](https://www.astron.nl/citt/pybdsf/)
+```
+Since the pipeline works by submiting bash scripts to a slurm worker node (non-interactively) you will need to specify the path to the singularity images of the software used by the pipeline.
 
-- UV_range:
-    uvrange: 
-Should you not want to enable this feature give the value nill
- For specific uvrange give the appropriate minimum as follows \>1000,\>1km, etc
+## Executing the pipeline
+As per the do's and don'ts of the [ILIFU](http://docs.ilifu.ac.za/#/getting_started/submit_job_slurm?id=specifying-resources-when-running-jobs-on-slurm) clone the repo into your scratch area:
 
+```
+mkdir example dir
+cd example
+git clone https://github.com/LeonMtshweni/IRIvBF/
+mv IRIvBF/* ./
+```
+Edit the config file should the defaults not be suitable for you:
+```
+vi config.yaml
+```
 
-- Masking:
-    Mask_list:
-Leave these in the experiment’s parent directory, appropriately named
-Give the value “auto” for auto-masking
-Give the value “nill” to create a mask using BDSF/BDSM
+Then execute the python script:
 
-- Wsclean_range:
-    min_range:
-Should you not want to enable this feature give the value nill
-Specify value without units (takes meters only)
+```
+python alpha_main.py
+```
+This will take a minute. Once terminal is freed up, inspect that the bash scripts are to your satisfaction:
+```
+cd scripts/
+```
+Once you're happy with the output, you may submit the jobs:
 
-- BDSM:
-    bdsf_par: 
-Should you not want to enable this feature give the value nill
-Leave these in the experiment’s parent directory, appropriately renamed to dummy_mask.fits
-A single entry requires two numbers. Like all the other options are entered as a comma-separated list but a single entry will require two int values separated by a semicolon. 
-For two ms file runs we’d have: ‘3;5’,’1;3’.if you wish not to specify this parameter use the command ‘none;none’ for each ms entry
-
-
-- Imaging:
-    robustness: -2.0,-1.0,0.0
-    auto_threshold: 3,3,3
-    automatic_mask_size: 5,5,5
-    
-#########################################
-# everything below this text is depricated
-##########################################
-How to run the pipeline
-`python <script_name> <ms_name> <uvrange> <mask_type/mask_list> <minuvw-m> <bdsdf_params> <og_data>`
-
-`<script_name>`
-Python script to run
-
-`<ms_name>`
-New files to be copied to current dir, the file name must not contain the .ms extension.
-
-`<uvrange>`
-If no uvrange is to be specified pass the string ‘none’, for specific uvrange give the appropriate minimum as follows \>1000,\>1km, etc
-
-`<mask_type/mask_list>`
-Kept in the /scratch/users/mtshweni/masters/masks/ directory and in fits format if not using auto mask
-
-`<minuvw-m>`
-If not needed leave whitespace as a string, otherwise specify without units (takes meters only)
-
-`<bdsdf_params>`
-To use this option you will need to have an existing image of field, rename it to masking_dummy.fits and leave it in the current directory. 
-You will need to set mask_type/mask_list = ‘none’. That is, pass none for the mask_type/mask_list input param
-A single entry requires two numbers. Like all the other options are entered as a comma-separated list but a single entry will require two int values separated by a semicolon. 
-For two ms file runs we’d have: ‘3;5’,’1;3’.if you wish not to specify this parameter use the command ‘none;none’ for each ms entry
-
-`<og_data>`
-Kept in the dir /scratch/users/mtshweni/masters/msback_up. If data isn’t here then move it there 
-
-Examples, suppose we cant to create a job for one ms file:
-`python alpha_main.py 'tight' 'none' 'none' ' ' '150;750' 1561723022_sdp_l0.full_1284.full_pol_split_1024ch_3C274_64_chn_32s.ms`
-`
+```
+source submit_jobs.sh
+```
