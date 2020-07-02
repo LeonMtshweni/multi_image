@@ -99,7 +99,7 @@ def main():
          teminator = 'kill_job_'+ myms +'.sh'
          
          # Open the file for writing
-         kill_file = open('terminator','w')
+         kill_file = open(terminator,'w')
          
          # Write header information to the file
          kill_file.writelines('echo "scancel "')
@@ -406,7 +406,7 @@ def main():
          # ------------------------------------------------------------------------------
 
     # write the command to the submit file
-    kill= '> ' + kill_file + '\n'
+    kill = kill_file.read()
     f.write(kill)
     # Close all the open files
     f.close()
