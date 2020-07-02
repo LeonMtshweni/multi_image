@@ -2,7 +2,8 @@
 
 ---
 ---
-![IRIvBF](IRIvBF.jpeg)
+![IRIvBF](IRIvBF_logo.jpeg)
+---
 ---
 * A collection of python scripts that perform parallel Multi-Frequency Synthesis imaging jobs with various imaging and selfcal parameters.
 * IRIvBF draws inspiration from [oxkat](https://github.com/IanHeywood/oxkat)
