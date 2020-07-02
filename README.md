@@ -11,14 +11,7 @@
 
 ---
 # Take Note
-* The pipeline makes use of the following software:
-```
-[CASA](https://casa.nrao.edu/docs/TaskRef/TaskRef.html)
-[Wsclean](https://sourceforge.net/p/wsclean/wiki/Home/)
-[Aimfast](https://aimfast.readthedocs.io/en/master/intro.html)
-[pyBDSF](https://www.astron.nl/citt/pybdsf/)
-```
-Since the pipeline works by submiting bash scripts to a slurm worker node (non-interactively) you will need to specify the path to the singularity images of the software used by the pipeline.
+* The pipeline makes use of the following software [CASA](https://casa.nrao.edu/docs/TaskRef/TaskRef.html), [Wsclean](https://sourceforge.net/p/wsclean/wiki/Home/), [Aimfast](https://aimfast.readthedocs.io/en/master/intro.html) and [pyBDSF](https://www.astron.nl/citt/pybdsf/). Since the pipeline works by submiting bash scripts to a slurm worker node (non-interactively) you will need to specify the path to the singularity images of the software used by the pipeline.
 
 ## Executing the pipeline
 As per the do's and don'ts of the [ILIFU](http://docs.ilifu.ac.za/#/getting_started/submit_job_slurm?id=specifying-resources-when-running-jobs-on-slurm) clone the repo into your scratch area:
