@@ -1,22 +1,22 @@
 - OG_data:
-    bckup: 1561723022_sdp_l0.full_1284.full_pol_1024ch_3C274_150MHz_64_chn_32s.ms
+    bckup: 1561723022_sdp_l0.full_1284.full_pol_split_1024ch_3C274_64_chn_32s.ms
 
 - Duplicates:
     mslist: auto1,auto2,auto3
 
 - UV_range:
-    uvrange: nill,\>150m,\>150m
+    uvrange: nill,nill,nill
 
 - Masking:
     mask_list: nill,nill,nill
 
 - Wsclean_range:
-    min_range:  nill,150,nill
+    min_range:  nill,nill,nill
 
 - BDSM:
     bdsf_par: nill,nill,nill
 
 - Imaging:
-    robustness: -2.0,-1.0,-0.5
-    auto_threshold: 15,10,5
+    robustness: -2.0,-2.0,-2.0
+    auto_threshold: 3,3,3
     automatic_mask_size: 5,5,5
