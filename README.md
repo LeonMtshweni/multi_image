@@ -1,5 +1,5 @@
 # Imaging Radio Interferometeric data via brute force (IRIvBF)
-![IRIvBF](IRIvBF.jpeg)
+![IRIvBF](https://github.com/LeonMtshweni/IRIvBF/blob/master/IRIvBF.jpeg)
 
 The config file takes commas separated values
 Config file Method
