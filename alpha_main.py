@@ -26,6 +26,8 @@ PYTHON_CONTAINER = '/idia/software/containers/python3/python3-2020-01-28.simg'
 SOURCE_FINDING_CONTAINER = '/idia/software/containers/sourcefinding-dev-2019-09-23.simg'
 # directory where data is fetched
 MS_BAK_DIR = '/scratch/users/mtshweni/masters/msback_up/'
+# aimfast container
+AIMFAST = '/idia/software/containers/STIMELA_IMAGES/stimela_aimfast_dev.sif'
 # mask directory
 MASK_DIR = '/scratch/users/mtshweni/masters/masks/'
 
@@ -330,25 +332,23 @@ def main():
          f.write(syscall+'\n')
 
          # ------------------------------------------------------------------------------
-         # Image statistics, First
+         # Aimfast , First
 
-         bash_script = SCRIPTS + '/' + myms+'_img_stat.sh'
-         logfile   = LOGS + '/' + myms+'_img_stat.log'  
+         bash_script = SCRIPTS + '/' + myms+'_aimfast.sh'
+         logfile   = LOGS + '/' + myms+'_aimfast.log'  
 
-         # write headings to image data file
-         image_data = IMG_STATS + '/' + myms + '_img_stat.dat'
-         beta.write_table(opfile = image_data)
+         # this variable constitutes the bash command 
+         bash_command  = 'singularity exec ' + AIMFAST + ' '
+         bash_command += 'aimfast  --residual-image ' + pcal_prefix + '-MFS-residual.fits' 
 
-         #
-         syscall = 'singularity exec '+CASA_CONTAINER+' '
-         syscall += 'casa -c ' + cwd + '/zeta_image_stats.py ' + pcal_prefix + '-MFS-image.fits' + ' ' + myms + ' --nologger --log2term --nogui\n'
-         beta.write_slurm(opfile  = bash_script,
-                          jobname = 'img_stat_' + myms,
-                          logfile = logfile,
-                          syscall = syscall)
+         # write the bash command into a bash script 
+         beta.write_slurm(opfile = slurmfile,
+                         jobname = 'aimfast_' + myms,
+                         logfile = logfile,
+                         syscall = bash_command)
 
-         job_id_im_stat1 = 'IMG_STAT_' + myms
-         syscall = job_id_im_stat1+"=`sbatch -d afterok:${"+job_id_PCAL1+"} "+bash_script+" | awk '{print $4}'`"
+         job_id_aimfast1 = 'AIMFAST_' + myms
+         syscall = job_id_aimfast1+"=`sbatch -d afterok:${"+job_id_PCAL1+"} "+bash_script+" | awk '{print $4}'`"
          # write the syscall command to the submit file
          f.write(syscall+'\n')
 
@@ -368,7 +368,7 @@ def main():
                          syscall = bash_command)
 
          job_id_rem_log = 'CLEAN_UP_' + myms
-         syscall = job_id_rem_log+"=`sbatch -d afterok:${"+job_id_im_stat1+"} "+bash_script+" | awk '{print $4}'`"
+         syscall = job_id_rem_log+"=`sbatch -d afterok:${"+job_id_aimfast1+"} "+bash_script+" | awk '{print $4}'`"
          # write the syscall command to the submit file
          f.write(syscall+'\n')
 
