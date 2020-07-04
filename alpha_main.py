@@ -90,6 +90,9 @@ def main():
     # ms_file to be copied
     ms_path = MS_BAK_DIR + og_dat
     
+    # mailing service address
+    address_mail = YAML[7]['EMAIL']['address']
+    
     # this loop simultaneously iterates through the lists provided
     for (myms,uv_range,fitsmask,min_uvw,isl_pix,rbst,auto_thresh,auto_mask) in zip(mslist,uvlist,masklist,wsclean_uv_range,isl_pix_input,robustness,auto_threshld,auto_mask_size):
 
@@ -138,6 +141,7 @@ def main():
            beta.write_slurm(opfile = bash_script,
                            jobname = 'cp_' + myms,
                            logfile = logfile,
+                           mail_ad = address_mail,
                            syscall = bash_command) 
            
            # slurm job name
@@ -157,6 +161,7 @@ def main():
          beta.write_slurm(opfile  = bash_script,
                          jobname = 'flag_sum1_' + myms,
                          logfile = logfile,
+                         mail_ad = address_mail,
                          syscall = syscall)
 
          job_id_flag_sum1 = 'FLAG_SUM1_' + myms
@@ -183,6 +188,7 @@ def main():
              beta.write_slurm(opfile  = bash_script,
                              jobname = 'bdsf_' + myms,
                              logfile = logfile,
+                             mail_ad = address_mail,
                              syscall = syscall)
 
              # set the newly created mask as the fitsmask
@@ -220,6 +226,7 @@ def main():
          beta.write_slurm(opfile = bash_script,
                         jobname = 'data_' + myms,
                         logfile = logfile,
+                        mail_ad = address_mail,
                         syscall = syscall)
 
          # To make sure that this job waits for the previous jobs accordingly,I'm lazily putting an if statement like I did above
@@ -249,6 +256,7 @@ def main():
          beta.write_slurm(opfile = bash_script,
                         jobname = 'predict_' + myms,
                         logfile = logfile,
+                        mail_ad = address_mail,
                         syscall = syscall)
  
          job_id_predict1 = 'PREDICT_' + myms
@@ -264,10 +272,11 @@ def main():
 
          syscall   = 'singularity exec '+CASA_CONTAINER+' '
          syscall  += 'casa -c ' + cwd + '/epsilon_selfcal_target_phases.py ' + myms_ext + ' ' + uv_range + ' --nologger --log2term --nogui\n'
-         beta.write_slurm(opfile  = bash_script,
-                         jobname  = 'phase_cal_' + myms,
-                         logfile  = logfile,
-                         syscall  = syscall)
+         beta.write_slurm(opfile = bash_script,
+                         jobname = 'phase_cal_' + myms,
+                         logfile = logfile,
+                         mail_ad = address_mail,
+                         syscall = syscall)
 
          job_id_phasecal1 = 'PHASECAL_' + myms
          syscall = job_id_phasecal1 + "=`sbatch -d afterok:${"+job_id_predict1+"} "+bash_script+" | awk '{print $4}'`"
@@ -285,6 +294,7 @@ def main():
          beta.write_slurm(opfile = bash_script,
                          jobname = 'flag_sum2_' + myms,
                          logfile = logfile,
+                         mail_ad = address_mail,
                          syscall = syscall)
 
          job_id_flag_sum2 = 'FLAG_SUM2_' + myms
@@ -320,6 +330,7 @@ def main():
          beta.write_slurm(opfile  = bash_script,
                           jobname = 'wcorr_' + myms,
                           logfile = logfile,
+                          mail_ad = address_mail,
                           syscall = syscall)
 
 
@@ -342,6 +353,7 @@ def main():
          beta.write_slurm(opfile = bash_script,
                          jobname = 'aimfast_' + myms,
                          logfile = logfile,
+                         mail_ad = address_mail,
                          syscall = bash_command)
 
          job_id_aimfast1 = 'AIMFAST_' + myms
@@ -362,6 +374,7 @@ def main():
          beta.write_slurm(opfile = bash_script,
                          jobname = 'clean_up_' + myms,
                          logfile = logfile,
+                         mail_ad = address_mail,
                          syscall = bash_command)
 
          job_id_rem_log = 'CLEAN_UP_' + myms
