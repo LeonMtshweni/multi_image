@@ -98,7 +98,7 @@ def main():
          pcal_prefix  = MAPS  + '/' + 'img_'+myms+'_pcal' 
 
          # Write header information to the file
-         kill_file.writelines('echo "scancel "')
+         #kill_file.writelines('echo "scancel "')
          
          #-------------------------------------------------------------------------------
          # Make Copies of Data
@@ -273,9 +273,6 @@ def main():
          syscall = job_id_phasecal1 + "=`sbatch -d afterok:${"+job_id_predict1+"} "+bash_script+" | awk '{print $4}'`"
          # write the syscall command to the submit file
          f.write(syscall+'\n')
-        
-         # write job name into the current dataset's kill file
-         kill_file.writelines('$' + job_id_phasecal1 + '" "')
          
          # ------------------------------------------------------------------------------
          # Flag Summary, Second
@@ -342,7 +339,7 @@ def main():
          bash_command += 'aimfast  --residual-image ' + pcal_prefix + '-MFS-residual.fits' 
 
          # write the bash command into a bash script 
-         beta.write_slurm(opfile = slurmfile,
+         beta.write_slurm(opfile = bash_script,
                          jobname = 'aimfast_' + myms,
                          logfile = logfile,
                          syscall = bash_command)
