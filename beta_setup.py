@@ -131,7 +131,7 @@ def generate_syscall_wsclean(mslist,
         syscall += '-no-update-model-required '
     elif not bda and nomodel:
         syscall += '-no-update-model-required '
-    if multiscale:
+    if multiscale == 'True':
         # replace the semicolon separators with commas
         scales = scales.replace(";",",")
         syscall += '-multiscale '
