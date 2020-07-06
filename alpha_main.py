@@ -83,9 +83,11 @@ def main():
     isl_pix_input = YAML[5]['BDSM']['bdsf_par'].split(',')
        
     # imaging parameters
-    robustness = YAML[6]['Imaging']['robustness'].split(',')
-    auto_threshld = YAML[6]['Imaging']['auto_threshold'].split(',')
-    auto_mask_size = YAML[6]['Imaging']['automatic_mask_size'].split(',')
+    robustness        = YAML[6]['Imaging']['robustness'].split(',')
+    auto_threshld     = YAML[6]['Imaging']['auto_threshold'].split(',')
+    auto_mask_size    = YAML[6]['Imaging']['automatic_mask_size'].split(',')
+    multiscale_clean  = YAML[6]['Imaging']['multiscale_clean'].split(',')
+    multiscale_scales = YAML[6]['Imaging']['multiscale_scales'].split(',')
 
     # ms_file to be copied
     ms_path = MS_BAK_DIR + og_dat
@@ -94,7 +96,7 @@ def main():
     address_mail = YAML[7]['EMAIL']['address']
     
     # this loop simultaneously iterates through the lists provided
-    for (myms,uv_range,fitsmask,min_uvw,isl_pix,rbst,auto_thresh,auto_mask) in zip(mslist,uvlist,masklist,wsclean_uv_range,isl_pix_input,robustness,auto_threshld,auto_mask_size):
+    for (myms,uv_range,fitsmask,min_uvw,isl_pix,rbst,auto_thresh,auto_mask,mltscl_cln,mltscl_scls) in zip(mslist,uvlist,masklist,wsclean_uv_range,isl_pix_input,robustness,auto_threshld,auto_mask_size,multiscale_clean,multiscale_scales):
 
          #image names 
          blind_prefix = MAPS  + '/' + 'img_'+myms+'_data'
@@ -219,7 +221,9 @@ def main():
                                             threshold_auto = auto_thresh,
                                             size_auto_mask = auto_mask,
                                                       bda  = False,
-                                                      mask = fitsmask)
+                                                      mask = fitsmask,
+                                                multiscale = mltscl_cln,
+                                                    scales = mltscl_scls)
 
 
          # This is what actually generates the command in a bash file
@@ -316,15 +320,17 @@ def main():
          logfile   = LOGS + '/' + myms+'_wsclean_correct.log'  # name of log file
 
          syscall  = 'singularity exec '+WSCLEAN_CONTAINER+' '
-         syscall += beta.generate_syscall_wsclean(mslist      = [myms_ext],
-                                                 imgname      = pcal_prefix,
-                                                 datacol      = 'CORRECTED_DATA',
-                                                 minuvw_range = min_uvw,
-                                                       briggs = rbst,
-                                               threshold_auto = auto_thresh,
-                                               size_auto_mask = auto_mask,
-                                                 bda          = False,
-                                                 mask         = fitsmask)
+         syscall += beta.generate_syscall_wsclean(mslist         = [myms_ext],
+                                                  imgname        = pcal_prefix,
+                                                  datacol        = 'CORRECTED_DATA',
+                                                  minuvw_range   = min_uvw,
+                                                  briggs         = rbst,
+                                                  threshold_auto = auto_thresh,
+                                                  size_auto_mask = auto_mask,
+                                                  bda            = False,
+                                                  mask           = fitsmask,
+                                                  multiscale     = mltscl_cln,
+                                                  scales         = mltscl_scls)
 
          # call function that writes the header info of a bash script
          beta.write_slurm(opfile  = bash_script,
