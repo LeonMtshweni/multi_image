@@ -104,25 +104,20 @@ def generate_syscall_wsclean(mslist,
                           mask,
                           size_auto_mask,
                           threshold_auto,
+                          multiscale,
+                          scales,
                           startchan=-1,
                           endchan=-1,
                           chanout=8,
                           imsize=5096,
                           cellsize='1.3asec',
                           niter=120000,
-                          multiscale=True,
-                          scales='10,20,30',
                           sourcelist=True,
                           bda=False,
                           nomodel=True,
                           fitspectralpol=2):
 
     # Generate system call to run wsclean
-
-
-    #if is_odd(imsize):
-    #    print('Do not use odd image sizes with wsclean')
-    #    sys.exit()
  
 
     syscall = 'wsclean '
@@ -137,6 +132,8 @@ def generate_syscall_wsclean(mslist,
     elif not bda and nomodel:
         syscall += '-no-update-model-required '
     if multiscale:
+        # replace the semicolon separators with commas
+        scales = scales.replace(";",",")
         syscall += '-multiscale '
         syscall += '-multiscale-scales '+scales+' '
         syscall += '-multiscale-scale-bias 0.6 '
