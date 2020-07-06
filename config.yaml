@@ -20,6 +20,8 @@
     robustness: -2.0,-2.0,-2.0
     auto_threshold: 3,3,3
     automatic_mask_size: 5,5,5
+    multiscale_clean: True,True,True
+    multiscale_scales: 10;20;30,10;20;30,10;20;30
 
 - EMAIL:
     address: 13371062@tuks.co.za
