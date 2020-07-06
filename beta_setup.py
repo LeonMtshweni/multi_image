@@ -4,41 +4,11 @@ import time
 import os
 import sys
 
-'''
-# generate the config file
-def config_file_gen():
-    config_yaml = open('config.yaml','w')
-    config_yaml.write("\
-- OG_data:\n\
-    bckup: 1561723022_sdp_l0.full_1284.full_pol_1024ch_3C274_150MHz_64_chn_32s.ms\n\
-\n\
-- Duplicates:\n\
-    mslist: auto,auto,auto\n\
-\n\
-- UV_range:\n\
-    uvrange: nill,\>150m,\>150m\n\
-\n\
-- Masking:\n\
-    mask_list: nill,nill,nill\n\
-\n\
-- Wsclean_range:\n\
-    min_range:  nill,150,nill\n\
-\n\
-- BDSM:\n\
-    bdsf_par: nill,nill,nill\n\
-\n\
-- Imaging:\n\
-    robustness: -2.0,-1.0,-0.5\n\
-    auto_threshold: 15,10,5\n\
-    automatic_mask_size: 5,5,5") 
-    config_yaml.close()
-'''
-
 # create directories to keep products
 def create_dirs():
 
     cwd = os.getcwd() # get current working directory
-    path_list = ['logs','maps','ms_files','scripts','image_stats','bdsf','casa_junk','engine_scripts'] # essential directories
+    path_list = ['logs','maps','ms_files','scripts','aimfast','bdsf','casa_junk','engine_scripts'] # essential directories
     for path in path_list:
         try:
             os.mkdir(cwd + '/' + path) #make this directory
