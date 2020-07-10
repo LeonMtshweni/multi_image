@@ -8,7 +8,7 @@ import sys
 def create_dirs():
 
     cwd = os.getcwd() # get current working directory
-    path_list = ['logs','maps','ms_files','scripts','aimfast','bdsf','casa_junk','engine_scripts'] # essential directories
+    path_list = ['logs','maps','ms_files','scripts','bdsf','casa_junk'] # essential directories
     for path in path_list:
         try:
             os.mkdir(cwd + '/' + path) #make this directory
