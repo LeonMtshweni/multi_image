@@ -250,7 +250,7 @@ def main():
          
          # ------------------------------------------------------------------------------
          # Pre-selfcal Report
-         slurmfile = SCRIPTS+'/'+myms+'_report_pre.sh' # name of the slurm file
+         bash_script = SCRIPTS+'/'+myms+'_report_pre.sh' # name of the slurm file
          logfile   = LOGS + '/' +myms+'_report_pre.log'  # name of log file
 
          # this variable constitutes the bash command that is gonna all the copying  
@@ -258,7 +258,7 @@ def main():
          bash_command += 'python report_png.py ' + myms + ' ' + blind_prefix
 
          # write the slurm file
-         beta.write_slurm(opfile  = slurmfile,
+         beta.write_slurm(opfile  = bash_script,
                          jobname = 'report_pre_' + myms,
                          logfile = logfile,
                          mail_ad = address_mail,
@@ -369,7 +369,7 @@ def main():
 
          # ------------------------------------------------------------------------------
          # Post-selfcal I Report
-         slurmfile = SCRIPTS+'/'+myms+'_report_post.sh' # name of the slurm file
+         bash_script = SCRIPTS+'/'+myms+'_report_post.sh' # name of the slurm file
          logfile   = LOGS + '/' +myms+'_report_post.log'  # name of log file
 
          # this variable constitutes the bash command that is gonna all the copying  
@@ -377,7 +377,7 @@ def main():
          bash_command += 'python report_png.py ' + myms + ' ' + pcal_prefix
 
          # write the slurm file
-         beta.write_slurm(opfile  = slurmfile,
+         beta.write_slurm(opfile  = bash_script,
                          jobname = 'report_post_' + myms,
                          logfile = logfile,
                          mail_ad = address_mail,
