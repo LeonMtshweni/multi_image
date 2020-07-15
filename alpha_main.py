@@ -245,6 +245,25 @@ def main():
              syscall = job_id_blind+"=`sbatch -d afterok:${"+job_id_flag_sum1+"} "+bash_script+" | awk '{print $4}'`"
              # write the syscall command to the submit file
              f.write(syscall+'\n')
+         
+         # ------------------------------------------------------------------------------
+         # Pre-selfcal Report
+         slurmfile = SCRIPTS+'/'+myms+'_report_pre.sh' # name of the slurm file
+         logfile   = LOGS + '/' +myms+'_report_pre.log'  # name of log file
+
+         # this variable constitutes the bash command that is gonna all the copying  
+         bash_command  = 'singularity exec ' +  PYTHON_CONTAINER+ ' '
+         bash_command += 'python report_png.py ' + myms + ' ' + blind_prefix
+
+         # write the slurm file
+         gen.write_slurm(opfile  = slurmfile,
+                         jobname = 'report_pre_' + myms,
+                         logfile = logfile,
+                         syscall = bash_command)
+
+         job_id_report_pre = myms + '_REPORT_PRE'
+         syscall = job_id_report_pre+"=`sbatch -d afterok:${"+job_id_blind+"} "+bash_script+" | awk '{print $4}'`"
+         f.write(syscall+'\n')
 
          # ------------------------------------------------------------------------------
          # Predict
@@ -264,7 +283,7 @@ def main():
                         syscall = syscall)
  
          job_id_predict1 = 'PREDICT_' + myms
-         syscall = job_id_predict1 + "=`sbatch -d afterok:${"+job_id_blind+"} "+bash_script+" | awk '{print $4}'`"
+         syscall = job_id_predict1 + "=`sbatch -d afterok:${"+job_id_report_pre+"} "+bash_script+" | awk '{print $4}'`"
          # write the syscall command to the submit file
          f.write(syscall+'\n')
 
@@ -346,6 +365,25 @@ def main():
          f.write(syscall+'\n')
 
          # ------------------------------------------------------------------------------
+         # Post-selfcal I Report
+         slurmfile = SCRIPTS+'/'+myms+'_report_post.sh' # name of the slurm file
+         logfile   = LOGS + '/' +myms+'_report_post.log'  # name of log file
+
+         # this variable constitutes the bash command that is gonna all the copying  
+         bash_command  = 'singularity exec ' +  PYTHON_CONTAINER+ ' '
+         bash_command += 'python report_png.py ' + myms + ' ' + pcal_prefix
+
+         # write the slurm file
+         gen.write_slurm(opfile  = slurmfile,
+                         jobname = 'report_post_' + myms,
+                         logfile = logfile,
+                         syscall = bash_command)
+
+         job_id_report_post = myms + '_REPORT_POST'
+         syscall = job_id_report_post+"=`sbatch -d afterok:${"+job_id_PCAL1+"} "+bash_script+" | awk '{print $4}'`"
+         f.write(syscall+'\n')
+
+         # ------------------------------------------------------------------------------
          # Aimfast , First
 
          bash_script = SCRIPTS + '/' + myms+'_aimfast.sh'
@@ -363,7 +401,7 @@ def main():
                          syscall = bash_command)
 
          job_id_aimfast1 = 'AIMFAST_' + myms
-         syscall = job_id_aimfast1+"=`sbatch -d afterok:${"+job_id_PCAL1+"} "+bash_script+" | awk '{print $4}'`"
+         syscall = job_id_aimfast1+"=`sbatch -d afterok:${"+job_id_report_post+"} "+bash_script+" | awk '{print $4}'`"
          # write the syscall command to the submit file
          f.write(syscall+'\n')
 
