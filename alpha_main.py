@@ -28,6 +28,8 @@ SOURCE_FINDING_CONTAINER = '/idia/software/containers/sourcefinding-dev-2019-09-
 MS_BAK_DIR = '/scratch/users/mtshweni/masters/msback_up/'
 # aimfast container
 AIMFAST = '/idia/software/containers/STIMELA_IMAGES/stimela_aimfast_dev.sif'
+# shadems container
+SHADEMS = '/software/astro/caracal/STIMELA_IMAGES_1.6.1/stimela_shadems_1.7.0.sif'
 # mask directory
 MASK_DIR = '/scratch/users/mtshweni/masters/masks/'
 
