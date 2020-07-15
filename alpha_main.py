@@ -256,9 +256,10 @@ def main():
          bash_command += 'python report_png.py ' + myms + ' ' + blind_prefix
 
          # write the slurm file
-         gen.write_slurm(opfile  = slurmfile,
+         beta.write_slurm(opfile  = slurmfile,
                          jobname = 'report_pre_' + myms,
                          logfile = logfile,
+                         mail_ad = address_mail,
                          syscall = bash_command)
 
          job_id_report_pre = myms + '_REPORT_PRE'
@@ -374,9 +375,10 @@ def main():
          bash_command += 'python report_png.py ' + myms + ' ' + pcal_prefix
 
          # write the slurm file
-         gen.write_slurm(opfile  = slurmfile,
+         beta.write_slurm(opfile  = slurmfile,
                          jobname = 'report_post_' + myms,
                          logfile = logfile,
+                         mail_ad = address_mail,
                          syscall = bash_command)
 
          job_id_report_post = myms + '_REPORT_POST'
