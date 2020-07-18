@@ -35,7 +35,7 @@ MASK_DIR = '/scratch/users/mtshweni/masters/masks/'
 
 # Essential directories
 LOGS      = cwd + '/logs'
-MAPS      = cwd + '/maps'
+MAPS      = './maps' #cwd + '/maps' # i used the shorthand method because of another script
 SCRIPTS   = cwd + '/scripts'
 MS_DIR    = cwd + '/ms_files'
 BDSF      = cwd + '/bdsf' 
