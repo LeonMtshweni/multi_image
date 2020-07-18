@@ -20,7 +20,7 @@ except FileExistsError:
 # fetch myms value from perminal
 myms = sys.argv[1]
 prefix = sys.argv[2]
-prefix = prefix[+48:]
+prefix = prefix[-21:]
 
 print('The measuremnt set in use is ', myms)
 
