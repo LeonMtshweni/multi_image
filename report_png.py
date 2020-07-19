@@ -150,7 +150,7 @@ fig.colorbar(ax11, cax=cax, orientation='vertical')
 
 #-----------------------------------------------------------------------------------------------------
 print(" -------------------------------------------------\nSaving Figure\n -------------------------------------------------\n")
-report_png = myms + '_report_' + prefix + '.png'
+report_name = prefix[+5:] + '.png'
 #fig.tight_layout() # for improved spacing between plots
-fig.savefig(cwd + '/reports/' + report_png, bbox_inches="tight") # saved png name
+fig.savefig(cwd + '/reports/' + report_name, bbox_inches="tight") # saved png name
 #----------------------------------------------------------------------------------------------------
