@@ -20,7 +20,7 @@ except FileExistsError:
 # fetch myms value from perminal
 myms = sys.argv[1]
 prefix = sys.argv[2]
-prefix = prefix[-21:]
+prefix = prefix.replace('_','_'+myms+'_')
 
 print('The measuremnt set in use is ', myms)
 
@@ -150,7 +150,7 @@ fig.colorbar(ax11, cax=cax, orientation='vertical')
 
 #-----------------------------------------------------------------------------------------------------
 print(" -------------------------------------------------\nSaving Figure\n -------------------------------------------------\n")
-report_name = prefix[+5:] + '.png'
+report_name = prefix + '.png'
 #fig.tight_layout() # for improved spacing between plots
 fig.savefig(cwd + '/reports/' + report_name, bbox_inches="tight") # saved png name
 #----------------------------------------------------------------------------------------------------
