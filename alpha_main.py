@@ -255,8 +255,8 @@ def main():
 
          # this variable constitutes the bash command that is gonna all the copying  
          bash_command  = 'singularity exec ' +  PYTHON_CONTAINER+ ' '
-         bash_command += 'python report_png.py ' + myms + ' ' + blind_prefix
-
+         bash_command += 'python report_png.py ' + myms + ' img_data'
+                 
          # write the slurm file
          beta.write_slurm(opfile  = bash_script,
                          jobname = 'report_pre_' + myms,
@@ -374,7 +374,7 @@ def main():
 
          # this variable constitutes the bash command that is gonna all the copying  
          bash_command  = 'singularity exec ' +  PYTHON_CONTAINER+ ' '
-         bash_command += 'python report_png.py ' + myms + ' ' + pcal_prefix
+         bash_command += 'python report_png.py ' + myms + ' img_pcal'
 
          # write the slurm file
          beta.write_slurm(opfile  = bash_script,
