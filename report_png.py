@@ -26,10 +26,11 @@ print('The measuremnt set in use is ', myms)
 
 
 #all_images = glob.glob("*data-MFS-image.fits")
-single_image = prefix + "-MFS-image.fits"
-single_resid = prefix + "-MFS-residual.fits"
-single_model = prefix + "-MFS-model.fits"
-single_psf   = prefix + "-MFS-psf.fits"
+
+single_image = cwd + '/maps/' + prefix + "-MFS-image.fits"
+single_resid = cwd + '/maps/' + prefix + "-MFS-residual.fits"
+single_model = cwd + '/maps/' + prefix + "-MFS-model.fits"
+single_psf   = cwd + '/maps/' + ipythonprefix + "-MFS-psf.fits"
 
 
 #Get the largest of these values
