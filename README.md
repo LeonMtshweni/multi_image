@@ -31,10 +31,18 @@ python alpha_main.py
 ```
 This will take a minute. Once terminal is freed up, inspect that the bash scripts are to your satisfaction:
 ```
-cd scripts/
+more scripts/*
 ```
 Once you're happy with the output, you may submit the jobs:
 
 ```
 source submit_jobs.sh
+```
+Your jobs should now be submitted to slurm. The ilifu cluster resources are sought after and your job may not be run as soon as you submit, if many users are requesting resources from the system your job may be queued for the next available resources. You can check on your progress via passing your user name to the squeue command:
+```
+squeue -u <your_user_name>
+```
+It may take a while before your job actually runs, for a quick estimate enter:
+```
+squeue -u <your_user_name> --start
 ```
