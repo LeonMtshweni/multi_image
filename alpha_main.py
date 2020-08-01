@@ -8,12 +8,16 @@ import shutil
 import yaml
 
 #---------------------------------------------------------------------------------------
-# path to remember
+# current working path
 cwd = os.getcwd()
+
 # crease essential directories to keep products
 beta.create_dirs()
-# generate the config file
-#beta.config_file_gen()
+print("#------------------------------------\n")
+print("Creating the engine directories directory\n")
+print("#------------------------------------\n")
+
+# FOR CONTAINERS
 IDIA_CONTAINER_PATH = '/software/astro/caracal/STIMELA_IMAGES_1.6.1/'
 STIMELA_CONTAINER_PATH = '/software/astro/caracal/STIMELA_IMAGES_1.6.1/'
 #wsclean container
@@ -24,12 +28,13 @@ CASA_CONTAINER = '/idia/software/containers/casa-stable-4.7.2.simg'
 PYTHON_CONTAINER = '/idia/software/containers/python3/python3-2020-01-28.simg'
 # source finding container
 SOURCE_FINDING_CONTAINER = '/idia/software/containers/sourcefinding-dev-2019-09-23.simg'
-# directory where data is fetched
-MS_BAK_DIR = '/scratch/users/mtshweni/masters/msback_up/'
 # aimfast container
 AIMFAST = '/idia/software/containers/STIMELA_IMAGES/stimela_aimfast_dev.sif'
 # shadems container
 SHADEMS = '/software/astro/caracal/STIMELA_IMAGES_1.6.1/stimela_shadems_1.7.0.sif'
+
+# directory where data is fetched
+MS_BAK_DIR = '/scratch/users/mtshweni/masters/msback_up/'
 # mask directory
 MASK_DIR = '/scratch/users/mtshweni/masters/masks/'
 
@@ -63,7 +68,7 @@ def main():
     # this is the data to be copied
     #og_dat = sys.argv[6]
     og_dat = YAML[0]['OG_data']['bckup']
-    print(og_dat)
+    print("Using the ms file %s" %og_dat)
     # load the list of data to be copied
     #mslist  = sys.argv[1].split(',')
     mslist = YAML[1]['Duplicates']['mslist'].split(',') 
