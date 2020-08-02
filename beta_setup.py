@@ -76,6 +76,7 @@ def generate_syscall_wsclean(mslist,
                           threshold_auto,
                           multiscale,
                           scales,
+                          taper_uv,
                           startchan=-1,
                           endchan=-1,
                           chanout=8,
@@ -112,6 +113,8 @@ def generate_syscall_wsclean(mslist,
     syscall += '-mgain 0.9 '
     syscall += '-nmiter 20 '
     syscall += '-weight briggs '+str(briggs)+' '
+    if taper_uv == 'True':
+        syscall += '-taper-gaussian ' + beam_size + ' '
     syscall += '-data-column '+datacol+' '
     if minuvw_range != 'nill':
         syscall += '-minuvw-m ' + minuvw_range + ' '
