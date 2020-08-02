@@ -23,7 +23,7 @@
     multiscale_clean: True,True,True
     multiscale_scales: 10;20;30,10;20;30,10;20;30
     taper_UV: nill,nill,nill
-    uv_taper: 2.0,2.0,2.0
+    uv_tapering: 2.0,2.0,2.0
 
 - EMAIL:
     address: 13371062@tuks.co.za
