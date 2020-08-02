@@ -115,7 +115,7 @@ def generate_syscall_wsclean(mslist,
     syscall += '-nmiter 20 '
     syscall += '-weight briggs '+str(briggs)+' '
     if taper_uv == 'True':
-        syscall += '-taper-gaussian ' + beam_size + ' '
+        syscall += '-taper-gaussian ' + str(beam_size) + ' '
     syscall += '-data-column '+datacol+' '
     if minuvw_range != 'nill':
         syscall += '-minuvw-m ' + minuvw_range + ' '
