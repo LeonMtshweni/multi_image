@@ -96,6 +96,7 @@ def main():
     auto_mask_size    = YAML[6]['Imaging']['automatic_mask_size'].split(',')
     multiscale_clean  = YAML[6]['Imaging']['multiscale_clean'].split(',')
     multiscale_scales = YAML[6]['Imaging']['multiscale_scales'].split(',')
+    uv_tapering       = YAML[6]['Imaging']['uv_tapering'].split(',')
 
     # ms_file to be copied
     ms_path = MS_BAK_DIR + og_dat
@@ -104,7 +105,7 @@ def main():
     address_mail = YAML[7]['EMAIL']['address']
     
     # this loop simultaneously iterates through the lists provided
-    for (myms,uv_range,fitsmask,min_uvw,isl_pix,rbst,auto_thresh,auto_mask,mltscl_cln,mltscl_scls) in zip(mslist,uvlist,masklist,wsclean_uv_range,isl_pix_input,robustness,auto_threshld,auto_mask_size,multiscale_clean,multiscale_scales):
+    for (myms,uv_range,fitsmask,min_uvw,isl_pix,rbst,auto_thresh,auto_mask,mltscl_cln,mltscl_scls,uv_taper) in zip(mslist,uvlist,masklist,wsclean_uv_range,isl_pix_input,robustness,auto_threshld,auto_mask_size,multiscale_clean,multiscale_scales,uv_tapering):
 
          #image names 
          blind_prefix = MAPS  + '/' + 'img_'+myms+'_data'
@@ -231,7 +232,9 @@ def main():
                                                       bda  = False,
                                                       mask = fitsmask,
                                                 multiscale = mltscl_cln,
-                                                    scales = mltscl_scls)
+                                                    scales = mltscl_scls,
+                                                  taper_uv = uv_taper,
+                                                 beam_size = uv_taper)
 
 
          # This is what actually generates the command in a bash file
@@ -358,7 +361,9 @@ def main():
                                                   bda            = False,
                                                   mask           = fitsmask,
                                                   multiscale     = mltscl_cln,
-                                                  scales         = mltscl_scls)
+                                                  scales         = mltscl_scls,
+                                                  taper_uv       = uv_taper,
+                                                  beam_size      = uv_taper)
 
          # call function that writes the header info of a bash script
          beta.write_slurm(opfile  = bash_script,
