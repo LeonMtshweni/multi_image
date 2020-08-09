@@ -14,10 +14,10 @@ The pipeline makes use of the following software [CASA](https://casa.nrao.edu/do
 As per the do's and don'ts of the [ILIFU](http://docs.ilifu.ac.za/#/getting_started/submit_job_slurm?id=specifying-resources-when-running-jobs-on-slurm) cluster, clone the repo into your scratch area:
 
 ```
-mkdir example dir
-cd example
+mkdir example_dir
+cd example_dir
 git clone https://github.com/LeonMtshweni/multi_image/
-mv multi_image/* ./
+cd multi_image/
 ```
 Edit the config file should the defaults not be suitable for you:
 ```
