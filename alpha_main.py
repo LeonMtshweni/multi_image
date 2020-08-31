@@ -56,7 +56,7 @@ def main():
     f = open(submit_file,'w')
 
     # yaml file name
-    yaml_file = cwd + '/multi_image/config.yaml'
+    yaml_file = cwd + '/config.yaml'
     # Read in file
     yml_file = open(yaml_file,'r')
     
