@@ -163,6 +163,26 @@ def main():
            f.write(syscall+'\n')
 
          #-------------------------------------------------------------------------------
+         # Generating visibility plots, I
+
+         bash_script = SCRIPTS + '/' + myms+'_shadems.sh' # name of the slurm file
+         logfile   = LOGS + '/' + myms+'_shadems.log'  # name of log file
+
+         syscall   = 'singularity exec '+SHADEMS+' '
+         syscall  += 'python ' + cwd + '/visibility_plot.py ' + myms_ext + ' DATA\n'
+         # write the slurm file
+         beta.write_slurm(opfile = bash_script,
+                         jobname = 'shadems_' + myms,
+                         logfile = logfile,
+                         mail_ad = address_mail,
+                         syscall = syscall)
+
+         job_id_shadems = 'SHADE_MS_' + myms
+         syscall = job_id_shadems+"=`sbatch -d afterok:${"+job_id_copy+"} "+bash_script+" | awk '{print $4}'`"
+         # write the syscall command to the submit file
+         f.write(syscall+'\n')
+
+         #-------------------------------------------------------------------------------
          # Flag Summary, First
 
          bash_script = SCRIPTS  + '/' + myms+'_flag_sum1.sh' # name of the slurm file
@@ -177,7 +197,7 @@ def main():
                          syscall = syscall)
 
          job_id_flag_sum1 = 'FLAG_SUM1_' + myms
-         syscall = job_id_flag_sum1 + "=`sbatch -d afterok:${"+job_id_copy+"} "+bash_script+" | awk '{print $4}'`"
+         syscall = job_id_flag_sum1 + "=`sbatch -d afterok:${"+job_id_shadems+"} "+bash_script+" | awk '{print $4}'`"
          # write the syscall command to the submit file
          f.write(syscall+'\n')
         
@@ -319,6 +339,27 @@ def main():
          # write the syscall command to the submit file
          f.write(syscall+'\n')
          
+         #-------------------------------------------------------------------------------
+         # Generating visibility plots, II
+         # Creating vis plots after selfcal run
+
+         bash_script = SCRIPTS + '/' + myms+'_shadems.sh' # name of the slurm file
+         logfile   = LOGS + '/' + myms+'_shadems.log'  # name of log file
+
+         syscall   = 'singularity exec '+SHADEMS+' '
+         syscall  += 'python ' + cwd + '/visibility_plot.py ' + myms_ext + ' CORRECTED_DATA\n'
+         # write the slurm file
+         beta.write_slurm(opfile = bash_script,
+                         jobname = 'shadems_' + myms,
+                         logfile = logfile,
+                         mail_ad = address_mail,
+                         syscall = syscall)
+
+         job_id_shadems = 'SHADE_MS_' + myms
+         syscall = job_id_shadems+"=`sbatch -d afterok:${"+job_id_phasecal1+"} "+bash_script+" | awk '{print $4}'`"
+         # write the syscall command to the submit file
+         f.write(syscall+'\n')
+        
          # ------------------------------------------------------------------------------
          # Flag Summary, Second
 
@@ -334,7 +375,7 @@ def main():
                          syscall = syscall)
 
          job_id_flag_sum2 = 'FLAG_SUM2_' + myms
-         syscall = job_id_flag_sum2 + "=`sbatch -d afterok:${"+job_id_phasecal1+"} "+bash_script+" | awk '{print $4}'`"
+         syscall = job_id_flag_sum2 + "=`sbatch -d afterok:${"+job_id_shadems+"} "+bash_script+" | awk '{print $4}'`"
          # write the syscall command to the submit file
          f.write(syscall+'\n')
 
