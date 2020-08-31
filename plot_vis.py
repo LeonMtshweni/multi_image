@@ -6,7 +6,9 @@ data_column = sys.argv[2]
 
 #---------------------------------------------------------------------------------------------------------------------
 # create sub dirs for all plots for each ms run
-path = cwd + '/visplots/' + myms[:-3]
+cwd = os.getcwd()
+no_path_myms = myms.split('/')[-1]
+path = 'visplots/' + no_path_myms[:-3]
 # create fir for the plots
 if not os.path.exists(path):
     os.makedirs(path)
@@ -21,8 +23,8 @@ antennas = 'm000,m002,m003,m004,m005,m007,m008,m009,m010,m011,m012,m013,m014,m01
 #---------------------------------------------------------------------------------------------------------------------
 # SHADEMS command
 
-commander = ['--xaxis TIME,CHAN,UV --yaxis '+data_column+':amp,'+data_column+':amp,'+data_column+':amp --corr ', # amplitude plots
-        '--xaxis TIME,CHAN,UV --yaxis '+data_column+':phase,'+data_column+':phase,'+data_column+':phase --corr '] # phase plots
+commander = ['--xaxis TIME,CHAN,UV --yaxis '+data_column+':amp,'+data_column+':amp,'+data_column+':amp --iter-corr ', # amplitude plots
+        '--xaxis TIME,CHAN,UV --yaxis '+data_column+':phase,'+data_column+':phase,'+data_column+':phase --iter-corr '] # phase plots
 
 for command in commander:
     os.system('shadems ' + command + ' --dir ' + path + ' ' + myms)
