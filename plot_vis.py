@@ -9,7 +9,7 @@ data_column = sys.argv[2]
 path = cwd + '/visplots/' + myms[:-3]
 # create fir for the plots
 if not os.path.exists(path):
-    os.mkdirs(path)
+    os.makedirs(path)
 
 #----------------------------------------------------------------------------------------------------------------------
 # List of antennas
