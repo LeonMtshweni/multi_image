@@ -169,7 +169,7 @@ def main():
          logfile   = LOGS + '/' + myms+'_shadems.log'  # name of log file
 
          syscall   = 'singularity exec '+SHADEMS+' '
-         syscall  += 'python ' + cwd + '/visibility_plot.py ' + myms_ext + ' DATA\n'
+         syscall  += 'python ' + cwd + '/plot_vis.py ' + myms_ext + ' DATA\n'
          # write the slurm file
          beta.write_slurm(opfile = bash_script,
                          jobname = 'shadems_' + myms,
@@ -347,7 +347,7 @@ def main():
          logfile   = LOGS + '/' + myms+'_shadems.log'  # name of log file
 
          syscall   = 'singularity exec '+SHADEMS+' '
-         syscall  += 'python ' + cwd + '/visibility_plot.py ' + myms_ext + ' CORRECTED_DATA\n'
+         syscall  += 'python ' + cwd + '/plot_vis.py ' + myms_ext + ' CORRECTED_DATA\n'
          # write the slurm file
          beta.write_slurm(opfile = bash_script,
                          jobname = 'shadems_' + myms,
