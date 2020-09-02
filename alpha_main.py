@@ -486,40 +486,75 @@ def main():
          # ------------------------------------------------------------------------------
 
     #-----------------------------------------------------------------------------------
-    # This code exists outside of the main loop 
+    # This code exists outside of the main loop
     #-----------------------------------------------------------------------------------
-    # Generating gif
+    # Generating gif for post selfcal pngs
 
     # the name of the shell script that gets run
-    bash_script = SCRIPTS + '/convert_gif.sh' # name of the slurm file
+    bash_script = SCRIPTS + '/pre_gif.sh' # name of the slurm file
     # name of the log file for gif.sh std out dump
-    logfile   = LOGS + '/convert_gif.log'  # name of log file
+    logfile   = LOGS + '/pre_gif.log'  # name of log file
     
     bash_command  = 'singularity exec ' + IMAGE_MAGIC_CONTAINER + ' ' 
-    bash_command += 'convert -delay 150 reports/*img*data.png loop 0 reports/data.gif'
+    bash_command += 'convert -delay 150 reports/*img*data.png loop 0 reports/data_movie.gif'
 
     # write the slurm file
     beta.write_slurm(opfile  = bash_script,
-                     jobname = 'cnvrt_gif', # this is the name that's displayed on squeue
+                     jobname = 'pre_gif', # this is the name that's displayed on squeue
                      logfile = logfile,
                      mail_ad = address_mail,
                      syscall = bash_command)
 
 
     # initialise the job Id with the base name of the job ID's
-    job_all_report = '${REPORT_POST_' 
+    job_id_convert_pre = '${REPORT_PRE_' 
     # insterts the actual job id's into the base name given above
     for msfile in mslist: 
-        job_all_report += msfile + "}:${REPORT_POST_"
+        job_id_convert_pre += msfile + "}:${REPORT_PRE_"
 
-    # remove the extra ":REPORT_POST_"
-    job_all_report = job_all_report[:-15] 
+    # remove the extra ":REPORT_PRE_"
+    job_id_convert_pre = job_id_convert_pre[:-14] 
     
     # name of job that generetes the gifs
-    job_gif = "GIF_ALL"
+    job_id_gif_pre = "GIF_PRE"
 
     # writes to the submit file, information about queuing and dependencies
-    syscall = job_gif+"=`sbatch -d afterok:"+job_all_report+" "+bash_script+" | awk '{print $4}'`"
+    syscall = job_id_gif_pre+"=`sbatch -d afterok:"+job_id_convert_pre+" "+bash_script+" | awk '{print $4}'`"
+    f.write(syscall+'\n')
+
+    #-----------------------------------------------------------------------------------
+    # Generating gif for post selfcal pngs
+
+    # the name of the shell script that gets run
+    bash_script = SCRIPTS + '/post_gif.sh' # name of the slurm file
+    # name of the log file for gif.sh std out dump
+    logfile   = LOGS + '/post_gif.log'  # name of log file
+    
+    bash_command  = 'singularity exec ' + IMAGE_MAGIC_CONTAINER + ' ' 
+    bash_command += 'convert -delay 150 reports/*img*pcal.png loop 0 reports/pcal_movie.gif'
+
+    # write the slurm file
+    beta.write_slurm(opfile  = bash_script,
+                     jobname = 'post_gif', # this is the name that's displayed on squeue
+                     logfile = logfile,
+                     mail_ad = address_mail,
+                     syscall = bash_command)
+
+
+    # initialise the job Id with the base name of the job ID's
+    job_id_convert_post = '${REPORT_POST_' 
+    # insterts the actual job id's into the base name given above
+    for msfile in mslist: 
+        job_id_convert_post += msfile + "}:${REPORT_POST_"
+
+    # remove the extra ":REPORT_POST_"
+    job_id_convert_post = job_id_convert_post[:-15] 
+    
+    # name of job that generetes the gifs
+    job_id_gif_post = "GIF_POST"
+
+    # writes to the submit file, information about queuing and dependencies
+    syscall = job_id_gif_post+"=`sbatch -d afterok:"+job_id_convert_post+" "+bash_script+" | awk '{print $4}'`"
     f.write(syscall+'\n')
 
     #-----------------------------------------------------------------------------------
