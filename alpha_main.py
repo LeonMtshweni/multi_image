@@ -296,7 +296,7 @@ def main():
                          mail_ad = address_mail,
                          syscall = bash_command)
 
-         job_id_report_pre = myms + '_REPORT_PRE'
+         job_id_report_pre = 'REPORT_PRE_' + myms
          syscall = job_id_report_pre+"=`sbatch -d afterok:${"+job_id_blind+"} "+bash_script+" | awk '{print $4}'`"
          f.write(syscall+'\n')
 
@@ -438,7 +438,7 @@ def main():
                          mail_ad = address_mail,
                          syscall = bash_command)
 
-         job_id_report_post = myms + '_REPORT_POST'
+         job_id_report_post = 'REPORT_POST_' + myms
          syscall = job_id_report_post+"=`sbatch -d afterok:${"+job_id_PCAL1+"} "+bash_script+" | awk '{print $4}'`"
          f.write(syscall+'\n')
 
