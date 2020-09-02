@@ -485,6 +485,45 @@ def main():
 
          # ------------------------------------------------------------------------------
 
+    #-----------------------------------------------------------------------------------
+    # This code exists outside of the main loop 
+    #-----------------------------------------------------------------------------------
+    # Generating gif
+
+    # the name of the shell script that gets run
+    bash_script = SCRIPTS + '/convert_gif.sh' # name of the slurm file
+    # name of the log file for gif.sh std out dump
+    logfile   = LOGS + '/convert_gif.log'  # name of log file
+    
+    bash_command  = 'singularity exec ' + IMAGE_MAGIC_CONTAINER + ' ' 
+    bash_command += 'convert -delay 150 reports/*img*data.png loop 0 reports/data.gif'
+
+    # write the slurm file
+    beta.write_slurm(opfile  = bash_script,
+                     jobname = 'cnvrt_gif', # this is the name that's displayed on squeue
+                     logfile = logfile,
+                     mail_ad = address_mail,
+                     syscall = bash_command)
+
+
+    # initialise the job Id with the base name of the job ID's
+    job_all_report = '${REPORT_POST_' 
+    # insterts the actual job id's into the base name given above
+    for msfile in mslist: 
+        job_all_report += msfile + "}:${REPORT_POST_"
+
+    # remove the extra ":REPORT_POST_"
+    job_all_report = job_all_report[:-15] 
+    
+    # name of job that generetes the gifs
+    job_gif = "GIF_ALL"
+
+    # writes to the submit file, information about queuing and dependencies
+    syscall = job_gif+"=`sbatch -d afterok:"+job_all_report+" "+bash_script+" | awk '{print $4}'`"
+    f.write(syscall+'\n')
+
+    #-----------------------------------------------------------------------------------
+
     f.close()
     yml_file.close()
     
