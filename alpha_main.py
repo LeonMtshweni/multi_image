@@ -167,19 +167,19 @@ def main():
          #-------------------------------------------------------------------------------
          # Generating visibility plots, I
 
-         bash_script = SCRIPTS + '/' + myms+'_shadems.sh' # name of the slurm file
-         logfile   = LOGS + '/' + myms+'_shadems.log'  # name of log file
+         bash_script = SCRIPTS + '/' + myms+'_shadems1.sh' # name of the slurm file
+         logfile   = LOGS + '/' + myms+'_shadems1.log'  # name of log file
 
          syscall   = 'singularity exec '+SHADEMS+' '
          syscall  += 'python ' + cwd + '/plot_vis.py ' + myms_ext + ' DATA\n'
          # write the slurm file
          beta.write_slurm(opfile = bash_script,
-                         jobname = 'shadems_' + myms,
+                         jobname = 'shadems_pre' + myms,
                          logfile = logfile,
                          mail_ad = address_mail,
                          syscall = syscall)
 
-         job_id_shadems_pre = 'SHADE_MS_' + myms
+         job_id_shadems_pre = 'SHADE_MS_PRE' + myms
          syscall = job_id_shadems_pre+"=`sbatch -d afterok:${"+job_id_copy+"} "+bash_script+" | awk '{print $4}'`"
          # write the syscall command to the submit file
          f.write(syscall+'\n')
@@ -345,19 +345,19 @@ def main():
          # Generating visibility plots, II
          # Creating vis plots after selfcal run
 
-         bash_script = SCRIPTS + '/' + myms+'_shadems.sh' # name of the slurm file
-         logfile   = LOGS + '/' + myms+'_shadems.log'  # name of log file
+         bash_script = SCRIPTS + '/' + myms+'_shadems2.sh' # name of the slurm file
+         logfile   = LOGS + '/' + myms+'_shadems2.log'  # name of log file
 
          syscall   = 'singularity exec '+SHADEMS+' '
          syscall  += 'python ' + cwd + '/plot_vis.py ' + myms_ext + ' CORRECTED_DATA\n'
          # write the slurm file
          beta.write_slurm(opfile = bash_script,
-                         jobname = 'shadems_' + myms,
+                         jobname = 'shadems_post' + myms,
                          logfile = logfile,
                          mail_ad = address_mail,
                          syscall = syscall)
 
-         job_id_shadems_post = 'SHADE_MS_' + myms
+         job_id_shadems_post = 'SHADE_MS_POST' + myms
          syscall = job_id_shadems_post+"=`sbatch -d afterok:${"+job_id_phasecal1+"} "+bash_script+" | awk '{print $4}'`"
          # write the syscall command to the submit file
          f.write(syscall+'\n')
