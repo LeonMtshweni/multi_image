@@ -179,8 +179,8 @@ def main():
                          mail_ad = address_mail,
                          syscall = syscall)
 
-         job_id_shadems = 'SHADE_MS_' + myms
-         syscall = job_id_shadems+"=`sbatch -d afterok:${"+job_id_copy+"} "+bash_script+" | awk '{print $4}'`"
+         job_id_shadems_pre = 'SHADE_MS_' + myms
+         syscall = job_id_shadems_pre+"=`sbatch -d afterok:${"+job_id_copy+"} "+bash_script+" | awk '{print $4}'`"
          # write the syscall command to the submit file
          f.write(syscall+'\n')
 
@@ -199,7 +199,7 @@ def main():
                          syscall = syscall)
 
          job_id_flag_sum1 = 'FLAG_SUM1_' + myms
-         syscall = job_id_flag_sum1 + "=`sbatch -d afterok:${"+job_id_shadems+"} "+bash_script+" | awk '{print $4}'`"
+         syscall = job_id_flag_sum1 + "=`sbatch -d afterok:${"+job_id_shadems_pre+"} "+bash_script+" | awk '{print $4}'`"
          # write the syscall command to the submit file
          f.write(syscall+'\n')
         
@@ -357,8 +357,8 @@ def main():
                          mail_ad = address_mail,
                          syscall = syscall)
 
-         job_id_shadems = 'SHADE_MS_' + myms
-         syscall = job_id_shadems+"=`sbatch -d afterok:${"+job_id_phasecal1+"} "+bash_script+" | awk '{print $4}'`"
+         job_id_shadems_post = 'SHADE_MS_' + myms
+         syscall = job_id_shadems_post+"=`sbatch -d afterok:${"+job_id_phasecal1+"} "+bash_script+" | awk '{print $4}'`"
          # write the syscall command to the submit file
          f.write(syscall+'\n')
         
@@ -377,7 +377,7 @@ def main():
                          syscall = syscall)
 
          job_id_flag_sum2 = 'FLAG_SUM2_' + myms
-         syscall = job_id_flag_sum2 + "=`sbatch -d afterok:${"+job_id_shadems+"} "+bash_script+" | awk '{print $4}'`"
+         syscall = job_id_flag_sum2 + "=`sbatch -d afterok:${"+job_id_shadems_post+"} "+bash_script+" | awk '{print $4}'`"
          # write the syscall command to the submit file
          f.write(syscall+'\n')
 
