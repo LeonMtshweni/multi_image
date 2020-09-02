@@ -218,7 +218,7 @@ def main():
              logfile   = LOGS     + '/' + myms + '_mask.log'  # name of log file
 
              syscall = 'singularity exec '+SOURCE_FINDING_CONTAINER+' '
-             syscall += 'python ' + cwd + '/multi_image/delta_src_fnd.py ' + myms + ' ' + str(isl) + ' ' + str(pix) + ' ' + img_name + '\n'
+             syscall += 'python ' + cwd + '/delta_src_fnd.py ' + myms + ' ' + str(isl) + ' ' + str(pix) + ' ' + img_name + '\n'
              beta.write_slurm(opfile  = bash_script,
                              jobname = 'bdsf_' + myms,
                              logfile = logfile,
@@ -287,7 +287,7 @@ def main():
 
          # this variable constitutes the bash command that is gonna all the copying  
          bash_command  = 'singularity exec ' +  PYTHON_CONTAINER+ ' '
-         bash_command += 'python multi_image/report_png.py ' + myms + ' img_data'
+         bash_command += 'python ' + cwd + '/report_png.py ' + myms + ' img_data'
                  
          # write the slurm file
          beta.write_slurm(opfile  = bash_script,
@@ -329,7 +329,7 @@ def main():
          logfile   = LOGS + '/' + myms + '_phase_cal.log'  # name of log file
 
          syscall   = 'singularity exec '+CASA_CONTAINER+' '
-         syscall  += 'casa -c ' + cwd + '/multi_image/epsilon_selfcal_target_phases.py ' + myms_ext + ' ' + uv_range + ' --nologger --log2term --nogui\n'
+         syscall  += 'casa -c ' + cwd + '/epsilon_selfcal_target_phases.py ' + myms_ext + ' ' + uv_range + ' --nologger --log2term --nogui\n'
          beta.write_slurm(opfile = bash_script,
                          jobname = 'phase_cal_' + myms,
                          logfile = logfile,
@@ -369,7 +369,7 @@ def main():
          logfile   = LOGS + '/' + myms + '_flag_sum2.log'  # name of log file
 
          syscall  = 'singularity exec '+CASA_CONTAINER+' '
-         syscall += 'casa -c ' + cwd + '/multi_image/gamma_flag_summary.py ' + myms_ext + ' --nologger --log2term --nogui\n'
+         syscall += 'casa -c ' + cwd + '/gamma_flag_summary.py ' + myms_ext + ' --nologger --log2term --nogui\n'
          beta.write_slurm(opfile = bash_script,
                          jobname = 'flag_sum2_' + myms,
                          logfile = logfile,
@@ -429,7 +429,7 @@ def main():
 
          # this variable constitutes the bash command that is gonna all the copying  
          bash_command  = 'singularity exec ' +  PYTHON_CONTAINER+ ' '
-         bash_command += 'python multi_image/report_png.py ' + myms + ' img_pcal'
+         bash_command += 'python ' + cwd + '/report_png.py ' + myms + ' img_pcal'
 
          # write the slurm file
          beta.write_slurm(opfile  = bash_script,
