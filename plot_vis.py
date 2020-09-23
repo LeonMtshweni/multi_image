@@ -28,3 +28,6 @@ commander = ['--xaxis TIME,CHAN,UV --yaxis '+data_column+':amp,'+data_column+':a
 
 for command in commander:
     os.system('shadems ' + command + ' --dir ' + path + ' ' + myms)
+
+# Plotting the uv-coverage
+os.system('shadems --xaxis U --yaxis V --dir ' + path + ' ' + myms)
