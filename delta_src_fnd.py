@@ -22,6 +22,8 @@ save_file = img_name[:-6]
 img = bdsf.process_image(img_name, thresh_isl= isl, thresh_pix = pix, adaptive_rms_box = True, \
       advanced_opts = True, stop_at = 'isl')
 
+# directory to dump the mask
+outdir = 'bdsf/' + myms + '_bdsf/'
 
 # export the image
-img.export_image(outfile = cwd + '/bdsf/' + myms + '_bdsf_mask.fits', img_type = 'island_mask')
+img.export_image(outfile = outdir + 'bdsf_mask.fits', img_type = 'island_mask')
