@@ -212,7 +212,8 @@ def main():
              isl, pix = isl_pix.split(';')
 
              # fetch the mask from current directory
-             img_name = glob.glob('masking_dummy.fits')[0]
+             img_name = glob.glob('dummy_mask.fits')[0]
+             #img_name = glob.glob('masking_dummy.fits')[0]
 
              bash_script = SCRIPTS  + '/' + myms + '_mask.sh' # name of the slurm file
              logfile   = LOGS     + '/' + myms + '_mask.log'  # name of log file
@@ -236,8 +237,10 @@ def main():
          # Automask wsclean
 
          # choose appropriate fitsmask for run
-         if path.exists(fitsmask):
-             fitsmask = fitsmask
+         if path.exists(cwd+ '/dummy_mask.fits'):
+                fitsmask = fitsmask
+         #if path.exists(fitsmask):
+         #    fitsmask = fitsmask
          else:
              fitsmask  = 'auto'
 
