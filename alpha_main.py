@@ -206,7 +206,15 @@ def main():
          #------------------------------------------------------------------------------
          # BDSF Island Mask Export
 
-         if path.exists(cwd+ '/dummy_mask.fits'): #fitsmask == 'nill':
+         if isl_pix !='nill;nill':
+             # the original dummy_mask 
+             source_dum_mask = 'dummy_mask.fits'
+             # name of bdsf sub-directory 
+             dest = 'bdsf/' + myms + '_bdsf'
+             # create said directory 
+             os.makedirs(dest)
+             # copy the mask to specific sub-directory 
+             destination = shutil.copy(source_dum_mask, dest)
 
              # split the isl and pix into their individual variables
              isl, pix = isl_pix.split(';')
@@ -226,8 +234,6 @@ def main():
                              mail_ad = address_mail,
                              syscall = syscall)
 
-             # set the newly created mask as the fitsmask
-             fitsmask    = cwd + '/bdsf/' + myms + '_bdsf_mask.fits' 
              job_id_bdsf = 'BDSF_' +myms
              syscall     = job_id_bdsf + "=`sbatch -d afterok:${"+job_id_flag_sum1+"} "+bash_script+" | awk '{print $4}'`"
              # write the syscall command to the submit file
@@ -237,10 +243,16 @@ def main():
          # Automask wsclean
 
          # choose appropriate fitsmask for run
-         if path.exists(fitsmask):
-             fitsmask = fitsmask
+         # if pybdsf is used
+         fits_pybdsf = 'bdsf/' + myms + '_bdsf/dummy_mask.fits'
+         if path.exists(fits_pybdsf):
+                fits_mask = fits_pybdsf
+         # if an existing fits mask is used
+         elif fitsmask !='nill':
+             fits_mask = fitsmask
+         # if an automatic mask is used
          else:
-             fitsmask  = 'auto'
+             fits_mask  = 'auto'
 
          # This sets up the command for wsclean
          bash_script = SCRIPTS + '/' + myms+'_wsclean_data.sh' # name of the slurm file # there needs to be one of these for all the ms files
@@ -254,7 +266,7 @@ def main():
                                             threshold_auto = auto_thresh,
                                             size_auto_mask = auto_mask,
                                                       bda  = False,
-                                                      mask = fitsmask,
+                                                      mask = fits_mask,
                                                 multiscale = mltscl_cln,
                                                     scales = mltscl_scls,
                                                   taper_uv = taper_bool,
@@ -404,7 +416,7 @@ def main():
                                                   threshold_auto = auto_thresh,
                                                   size_auto_mask = auto_mask,
                                                   bda            = False,
-                                                  mask           = fitsmask,
+                                                  mask           = fits_mask,
                                                   multiscale     = mltscl_cln,
                                                   scales         = mltscl_scls,
                                                   taper_uv       = taper_bool,
