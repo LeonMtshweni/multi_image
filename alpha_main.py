@@ -237,10 +237,8 @@ def main():
          # Automask wsclean
 
          # choose appropriate fitsmask for run
-         if path.exists(cwd+ '/dummy_mask.fits'):
-                fitsmask = fitsmask
-         #if path.exists(fitsmask):
-         #    fitsmask = fitsmask
+         if path.exists(fitsmask):
+             fitsmask = fitsmask
          else:
              fitsmask  = 'auto'
 
