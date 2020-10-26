@@ -117,6 +117,7 @@ def generate_syscall_wsclean(mslist,
     if taper_uv == 'True':
         syscall += '-taper-gaussian ' + str(beam_size) + ' '
     syscall += '-data-column '+datacol+' '
+    syscall += '-auto-threshold ' +str(threshold_auto)+' '
     if minuvw_range != 'nill':
         syscall += '-minuvw-m ' + minuvw_range + ' '
     if startchan != -1 and endchan != -1:
@@ -126,7 +127,6 @@ def generate_syscall_wsclean(mslist,
     elif mask.lower() == 'none':
         syscall += ''
     elif mask.lower() == 'auto':
-        syscall += '-auto-threshold ' +str(threshold_auto)+' '
         syscall += '-auto-mask '+str(size_auto_mask)+' '
     syscall += '-no-small-inversion '
     syscall += '-pol I '
