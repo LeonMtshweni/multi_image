@@ -396,12 +396,24 @@ def main():
 
          # ------------------------------------------------------------------------------
          # WSCLEAN CORRECTED_DATA
+         
+         # choose appropriate fitsmask for run
+         # if pybdsf is used
+         fits_pybdsf = 'bdsf/' + myms + '_bdsf/dummy_mask.fits'
+         if path.exists(fits_pybdsf):
+                fits_mask = fits_pybdsf
+         # if an existing fits mask is used
+         elif fitsmask !='nill':
+             fits_mask = fitsmask
+         # if an automatic mask is used
+         else:
+             fits_mask  = 'auto'
 
          # choose appropriate fitsmask for run
-         if path.exists(fitsmask):
-             fitsmask = fitsmask
-         else:
-             fitsmask = 'auto'
+         #if path.exists(fitsmask):
+         #    fitsmask = fitsmask
+         #else:
+         #    fitsmask = 'auto'
 
          # This sets up the command for wsclean
          bash_script = SCRIPTS + '/' + myms+'_wsclean_correct.sh' # name of the slurm file
