@@ -25,6 +25,8 @@ STIMELA_CONTAINER_PATH = '/software/astro/caracal/STIMELA_IMAGES_1.6.1/'
 WSCLEAN_CONTAINER = STIMELA_CONTAINER_PATH +'stimela_wsclean_1.6.0.sif'
 # casa container
 CASA_CONTAINER = '/idia/software/containers/casa-stable-4.7.2.simg'
+# cubical container
+CUBICAL_CONTAINER = '/idia/software/containers/STIMELA_IMAGES/stimela_cubical_1.5.4.sif'
 # python container
 PYTHON_CONTAINER = '/idia/software/containers/python3/python3-2020-01-28.simg'
 # source finding container
@@ -102,38 +104,38 @@ def main():
     uv_tapering       = YAML[6]['Imaging']['uv_tapering'].split(',')
     
     # selfcal parameters
-    data_column = YAML[7]['Selfcal']  
-    out-column= YAML[7]['Selfcal']
-    weight-column = YAML[7]['Selfcal']
-    model-ddes = YAML[7]['Selfcal']
-    g-solvable = YAML[7]['Selfcal']
-    #g-type  = YAML[7]['Selfcal']
-    g-type  = YAML[7]['Selfcal']
-    flags-reinit-bitflags= YAML[7]['Selfcal']
-    g-save-to   = YAML[7]['Selfcal']
-    flags-auto-init = YAML[7]['Selfcal']
-    sol-jones    = YAML[7]['Selfcal']
-    sol-min-bl      = YAML[7]['Selfcal']
-    g-clip-high   = YAML[7]['Selfcal']
-    g-clip-low  = YAML[7]['Selfcal']
-    g-solvable     = YAML[7]['Selfcal']
-    g-time-int        = YAML[7]['Selfcal']
-    out-overwrite       = YAML[7]['Selfcal']
-    g-freq-int        = YAML[7]['Selfcal']
-    model-list      = YAML[7]['Selfcal']
-    sol-term-iters    = YAML[7]['Selfcal']
-    out-name        = YAML[7]['Selfcal']
-    data-freq-chunk    = YAML[7]['Selfcal']
-    data-time-chunk    = YAML[7]['Selfcal']
-    dist-ncpu         = YAML[7]['Selfcal']
-    dist-max-chunks    = YAML[7]['Selfcal']
-    out-mode      = YAML[7]['Selfcal']
-    madmax-enable     = YAML[7]['Selfcal']
-    madmax-plot        = YAML[7]['Selfcal']
-    madmax-threshold   = YAML[7]['Selfcal']
-    madmax-estimate   = YAML[7]['Selfcal']
-    out-casa-gaintables = YAML[7]['Selfcal']
-    log-verbose   = YAML[7]['Selfcal']
+    data_column           = YAML[7]['Selfcal']['data-column']
+    out_column            = YAML[7]['Selfcal']['out-column']
+    weight_column         = YAML[7]['Selfcal']['weight-column']
+    model_ddes            = YAML[7]['Selfcal']['model-ddes']
+    g_solvable            = YAML[7]['Selfcal']['g-solvable']
+    #g_type               = YAML[7]['Selfcal']
+    g_type                = YAML[7]['Selfcal']['g-type']
+    flags_reinit_bitflags = YAML[7]['Selfcal']
+    g_save_to             = YAML[7]['Selfcal']
+    flags_auto_init       = YAML[7]['Selfcal']
+    sol_jones             = YAML[7]['Selfcal']
+    sol_min_bl            = YAML[7]['Selfcal']
+    g_clip_high           = YAML[7]['Selfcal']
+    g_clip_low            = YAML[7]['Selfcal']
+    g_solvable            = YAML[7]['Selfcal']
+    g_time_int            = YAML[7]['Selfcal']
+    out_overwrite         = YAML[7]['Selfcal']
+    g_freq_int            = YAML[7]['Selfcal']
+    model_list            = YAML[7]['Selfcal']
+    sol_term_iters        = YAML[7]['Selfcal']
+    out_name              = YAML[7]['Selfcal']
+    data_freq_chunk       = YAML[7]['Selfcal']
+    data_time_chunk       = YAML[7]['Selfcal']
+    dist_ncpu             = YAML[7]['Selfcal']
+    dist_max_chunks       = YAML[7]['Selfcal']
+    out_mode              = YAML[7]['Selfcal']
+    madmax_enable         = YAML[7]['Selfcal']
+    madmax_plot           = YAML[7]['Selfcal']
+    madmax_threshold      = YAML[7]['Selfcal']
+    madmax_estimate       = YAML[7]['Selfcal']
+    out_casa_gaintables   = YAML[7]['Selfcal']
+    log_verbose           = YAML[7]['Selfcal']
 
     # ms_file to be copied
     ms_path = MS_BAK_DIR + og_dat
@@ -375,14 +377,18 @@ def main():
          bash_script = SCRIPTS + '/' + myms + '_phase_cal.sh' # name of the slurm file
          logfile   = LOGS + '/' + myms + '_phase_cal.log'  # name of log file
 
-         syscall   = 'singularity exec '+CASA_CONTAINER+' '
-         syscall  += 'casa -c ' + cwd + '/epsilon_selfcal_target_phases.py ' + myms_ext + ' ' + uv_range + ' --nologger --log2term --nogui\n'
-         beta.write_slurm(opfile = bash_script,
-                         jobname = 'phase_cal_' + myms,
-                         logfile = logfile,
-                         mail_ad = address_mail,
-                         syscall = syscall)
-
+         syscall   = 'singularity exec '+CUBICAL_CONTAINER+' '
+         #syscall   = 'singularity exec '+CASA_CONTAINER+' '
+         #syscall  += 'casa -c ' + cwd + '/epsilon_selfcal_target_phases.py ' + myms_ext + ' ' + uv_range + ' --nologger --log2term --nogui\n'
+         #beta.write_slurm(opfile = bash_script,
+         #                jobname = 'phase_cal_' + myms,
+         #                logfile = logfile,
+         #                mail_ad = address_mail,
+         #                syscall = syscall)
+         syscall += beta.selfcal_cubical(myms,
+                                         
+             
+             
          job_id_phasecal1 = 'PHASECAL_' + myms
          syscall = job_id_phasecal1 + "=`sbatch -d afterok:${"+job_id_predict1+"} "+bash_script+" | awk '{print $4}'`"
          # write the syscall command to the submit file
