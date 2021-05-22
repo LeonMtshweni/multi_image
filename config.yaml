@@ -25,6 +25,41 @@
     taper_UV: nill,nill,nill
     uv_tapering: 2.0,2.0,2.0
 
+- Selfcal:
+    data-column          : "DATA"               ### Column in which the data lives.
+    out-column           : "CORRECTED_DATA"
+    weight-column        : "WEIGHT_SPECTRUM"
+    model-ddes           : "auto"
+    g-solvable           : True
+    #g-type              : "phase-diag"        ### Use phase-diag instead of f-slope if you prefer phase-cal only###
+    g-type               : "f-slope"           ### Solves for residual delays + phase ###
+    flags-reinit-bitflags: False
+    g-save-to            : "phase-0-{0:d}.parmdb".format(i)
+    flags-auto-init      : 'legacy'
+    sol-jones            : "G"
+    sol-min-bl           : 300
+    g-clip-high          : 2.5
+    g-clip-low           : 0.5
+    g-solvable           : True
+    g-time-int           : 15    ### solution interval of 15 timeslots - should be really 1 timeslot for delays ###
+    out-overwrite        : True
+    g-freq-int           : 0     ### solution interval in f: the whole bandwidth, i.e. don't solve for bandpass ###
+    model-list           : spf("MODEL_DATA")
+    sol-term-iters       : 30
+    out-name             : "delayself_0"
+    data-freq-chunk      : 0
+    data-time-chunk      : 1
+    dist-ncpu            : 4
+    dist-max-chunks      : 4
+    out-mode             : "sc"
+    madmax-enable        : True
+    madmax-plot          : True
+    madmax-threshold     : [10,12]
+    madmax-estimate      : "corr"
+    out-casa-gaintables  : True
+    log-verbose          : 'solver=2'
+    
+
 - EMAIL:
     address: 13371062@tuks.co.za
 
