@@ -29,41 +29,59 @@ def write_table(opfile):
     t.writelines(['img_name  rms  dynamic_range  flux\n'])
     t.close()
 
-def selfcal_cubical():
+def selfcal_cubical(sol_jones,
+                   data_ms = myms,
+                   data_column = 'DATA',
+                   time_chunk = ,
+                   freq_chunk,
+                   model_list = 'MODEL_DATA',
+                   model_ddes,
+                   model_pa_rotate,
+                   model_feed_rotate,
+                   weight_column = 'WEIGHT_SPECTRUM',
+                   out_column = 'CORRECTED_DATA',
+                   g_time_int = 15,
+                   g_freq_int = 0,
+                   g_clip_low = 0.5,
+                   g_clip_high,
+                   g_solvable,
+                   g_type = 'f-slope',
+                   g_save_to):
+    
     syscall  = 'gocubical '
-    syscall += '--sol-jones G + str(1) + ' '
-    syscall += '--data-ms ' /stimela_mount/msdir/8sec_ch3_ch7_removed_lo.ms + str(1) + ' ' 
-    syscall += '--data-column ' + str(DATA) + ' ' 
-    syscall += '--data-time-chunk ' +str(1) + ' ' 
-    syscall += '--data-freq-chunk ' 0 +str(1) + ' ' 
-    syscall += '--model-list ' MODEL_DATA  +str(1) + ' ' 
-    syscall += '--model-ddes ' auto  + str(1) + ' ' 
-    syscall += '--model-pa-rotate ' 0 + str(1) + ' ' 
-    syscall += '--model-feed-rotate ' 0 + str(1) + ' ' 
-    syscall += '--weight-column ' WEIGHT_SPECTRUM + str(1) + ' ' 
-    syscall += '--flags-auto-init ' legacy + str(1) + ' ' 
-    syscall += '--flags-reinit-bitflags ' 0 + str(1) + ' ' 
-    syscall += '--madmax-enable ' 1 + str(1) + ' ' 
-    syscall += '--madmax-estimate ' corr + str(1) + ' ' 
-    syscall += '--madmax-plot ' 1 + str(1) + ' ' 
-    syscall += '--madmax-threshold ' 10,12 + str(1) + ' ' 
-    syscall += '--sol-term-iters ' 30 + str(1) + ' ' 
-    syscall += '--sol-min-bl ' 300 + str(1) + ' ' 
-    syscall += '--dist-ncpu ' 4 + str(1) + ' ' 
+    syscall += '--sol-jones G '
+    syscall += '--data-ms ' + data_ms + ' ' 
+    syscall += '--data-column ' + data_column + ' ' 
+    syscall += '--data-time-chunk ' + time_chunk + ' ' 
+    #syscall += '--data-freq-chunk False ' 
+    syscall += '--model-list ' + model_list + ' ' 
+    syscall += '--model-ddes auto ' 
+    #syscall += '--model-pa-rotate False ' 
+    #syscall += '--model-feed-rotate False' ' 
+    syscall += '--weight-column ' + weight_column + ' ' 
+    syscall += '--flags-auto-init legacy ' 
+    #syscall += '--flags-reinit-bitflags False ' 
+    syscall += '--madmax-enable True ' 
+    syscall += '--madmax-estimate corr ' 
+    syscall += '--madmax-plot True ' 
+    #syscall += '--madmax-threshold ' 10,12 + str(1) + ' ' 
+    syscall += '--sol-term-iters 30 ' 
+    syscall += '--sol-min-bl 300 ' 
+    syscall += '--dist-ncpu 4 ' 
     syscall += '--dist-max-chunks ' 4 + str(1) + ' ' 
-    syscall += '--out-name ' /stimela_mount/output/delayself_0 + str(1) + ' ' 
-    syscall += '--out-overwrite ' 1 + str(1) + ' ' 
-    syscall += '--out-mode ' sc + str(1) + ' ' 
-    syscall += '--out-column ' CORRECTED_DATA + str(1) + ' ' 
-    syscall += '--out-casa-gaintables ' 1 + str(1) + ' ' 
-    syscall += '--log-verbose ' solver=2 + str(1) + ' ' 
-    syscall += '--g-time-int ' 15 + str(1) + ' ' 
-    syscall += '--g-freq-int ' 0 + str(1) + ' ' 
-    syscall += '--g-clip-low ' 0.5 + str(1) + ' ' 
-    syscall += '--g-clip-high ' 2.5 + str(1) + ' ' 
-    syscall += '--g-solvable ' 1 + str(1) + ' ' 
-    syscall += '--g-type f-slope ' + str(1) + ' ' 
-    syscall += '--g-save-to ' /stimela_mount/output/phase-0-0.parmdb + str(1) + ' ' 
+    #syscall += '--out-name ' /stimela_mount/output/delayself_0 + str(1) + ' ' 
+    syscall += '--out-overwrite True ' 
+    syscall += '--out-mode sc ' 
+    syscall += '--out-column ' + out_column + ' ' 
+    syscall += '--out-casa-gaintables True ' 
+    syscall += '--log-verbose solver=2 ' 
+    syscall += '--g-time-int ' + g_freq_int + ' ' 
+    syscall += '--g-freq-int ' + str(1) + ' ' 
+    syscall += '--g-clip-low ' + g_clip_low + ' ' 
+    syscall += '--g-clip-high ' + g_clip_high + ' ' 
+    syscall += '--g-solvable ' + g_solvable1 + ' ' 
+    syscall += '--g-type ' + g_type + ' ' 
+    syscall += '--g-save-to ' +g_save_to + ' '/stimela_mount/output/phase-0-0.parmdb + str(1) + ' ' 
     
 # this function writes the slurm/bash script 
 def write_slurm(opfile,
