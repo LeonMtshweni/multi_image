@@ -100,6 +100,40 @@ def main():
     multiscale_scales = YAML[6]['Imaging']['multiscale_scales'].split(',')
     taper_UV          = YAML[6]['Imaging']['taper_UV'].split(',')
     uv_tapering       = YAML[6]['Imaging']['uv_tapering'].split(',')
+    
+    # selfcal parameters
+    data_column = YAML[6]['Selfcal']  
+    out-column= YAML[6]['Selfcal']
+    weight-column = YAML[6]['Selfcal']
+    model-ddes = YAML[6]['Selfcal']
+    g-solvable = YAML[6]['Selfcal']
+    #g-type  = YAML[6]['Selfcal']
+    g-type  = YAML[6]['Selfcal']
+    flags-reinit-bitflags= YAML[6]['Selfcal']
+    g-save-to   = YAML[6]['Selfcal']
+    flags-auto-init = YAML[6]['Selfcal']
+    sol-jones    = YAML[6]['Selfcal']
+    sol-min-bl      = YAML[6]['Selfcal']
+    g-clip-high   = YAML[6]['Selfcal']
+    g-clip-low  = YAML[6]['Selfcal']
+    g-solvable     = YAML[6]['Selfcal']
+    g-time-int        = YAML[6]['Selfcal']
+    out-overwrite       = YAML[6]['Selfcal']
+    g-freq-int        = YAML[6]['Selfcal']
+    model-list      = YAML[6]['Selfcal']
+    sol-term-iters    = YAML[6]['Selfcal']
+    out-name        = YAML[6]['Selfcal']
+    data-freq-chunk    = YAML[6]['Selfcal']
+    data-time-chunk    = YAML[6]['Selfcal']
+    dist-ncpu         = YAML[6]['Selfcal']
+    dist-max-chunks    = YAML[6]['Selfcal']
+    out-mode      = YAML[6]['Selfcal']
+    madmax-enable     = YAML[6]['Selfcal']
+    madmax-plot        = YAML[6]['Selfcal']
+    madmax-threshold   = YAML[6]['Selfcal']
+    madmax-estimate   = YAML[6]['Selfcal']
+    out-casa-gaintables = YAML[6]['Selfcal']
+    log-verbose   = YAML[6]['Selfcal']
 
     # ms_file to be copied
     ms_path = MS_BAK_DIR + og_dat
