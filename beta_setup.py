@@ -29,7 +29,42 @@ def write_table(opfile):
     t.writelines(['img_name  rms  dynamic_range  flux\n'])
     t.close()
 
-
+def selfcal_cubical():
+    syscall  = 'gocubical '
+    syscall += '--sol-jones G 
+    syscall += --data-ms /stimela_mount/msdir/8sec_ch3_ch7_removed_lo.ms 
+    syscall += --data-column DATA 
+    syscall += --data-time-chunk 1 
+    syscall += --data-freq-chunk 0 
+    syscall += --model-list MODEL_DATA 
+    syscall += --model-ddes auto 
+    syscall += --model-pa-rotate 0 
+    syscall += --model-feed-rotate 0 
+    syscall += --weight-column WEIGHT_SPECTRUM 
+    syscall += --flags-auto-init legacy 
+    syscall += --flags-reinit-bitflags 0 
+    syscall += --madmax-enable 1 
+    syscall += --madmax-estimate corr 
+    syscall += --madmax-plot 1 
+    syscall += --madmax-threshold 10,12 
+    syscall += --sol-term-iters 30 
+    syscall += --sol-min-bl 300 
+    syscall += --dist-ncpu 4 
+    syscall += --dist-max-chunks 4 
+    syscall += --out-name /stimela_mount/output/delayself_0 
+    syscall += --out-overwrite 1 
+    syscall += --out-mode sc 
+    syscall += --out-column CORRECTED_DATA 
+    syscall += --out-casa-gaintables 1 
+    syscall += --log-verbose solver=2 
+    syscall += --g-time-int 15 
+    syscall += --g-freq-int 0 
+    syscall += --g-clip-low 0.5 
+    syscall += --g-clip-high 2.5 
+    syscall += --g-solvable 1 
+    syscall += --g-type f-slope 
+    syscall += --g-save-to /stimela_mount/output/phase-0-0.parmdb
+    
 # this function writes the slurm/bash script 
 def write_slurm(opfile,
                 jobname,
