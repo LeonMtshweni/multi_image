@@ -29,59 +29,58 @@ def write_table(opfile):
     t.writelines(['img_name  rms  dynamic_range  flux\n'])
     t.close()
 
-def selfcal_cubical(sol_jones,
-                   data_ms = myms,
-                   data_column = 'DATA',
-                   time_chunk = ,
-                   freq_chunk,
-                   model_list = 'MODEL_DATA',
-                   model_ddes,
-                   model_pa_rotate,
-                   model_feed_rotate,
-                   weight_column = 'WEIGHT_SPECTRUM',
-                   out_column = 'CORRECTED_DATA',
-                   g_time_int = 15,
-                   g_freq_int = 0,
-                   g_clip_low = 0.5,
-                   g_clip_high,
-                   g_solvable,
-                   g_type = 'f-slope',
-                   g_save_to):
+def selfcal_cubical(sol_jones        = 'G',
+                   data_ms           = myms,
+                   data_column       = 'DATA',
+                   out_column        = 'CORRECTED_DATA',
+                   weight_column     = 'WEIGHT_SPECTRUM',
+                   model_ddes        = 'auto',
+                   g_solvable        = True,
+                   g_type            = 'f-slope',
+                   time_chunk        = 1,
+                   freq_chunk        = 0,
+                   sol_term_iters    = 30,
+                   model_list        = 'MODEL_DATA',
+                   g_time_int        = 15,
+                   g_freq_int        = 0,
+                   g_clip_low        = 0.5,
+                   g_clip_high.      = 2.5,
+                   madmax_threshold  = [10,12],
+                   #g_save_to,
+                   out_name          = 'delayself_0'):
     
     syscall  = 'gocubical '
     syscall += '--sol-jones G '
     syscall += '--data-ms ' + data_ms + ' ' 
     syscall += '--data-column ' + data_column + ' ' 
     syscall += '--data-time-chunk ' + time_chunk + ' ' 
-    #syscall += '--data-freq-chunk False ' 
+    syscall += '--data-freq-chunk ' + freq_chunk + ' ' 
     syscall += '--model-list ' + model_list + ' ' 
-    syscall += '--model-ddes auto ' 
-    #syscall += '--model-pa-rotate False ' 
-    #syscall += '--model-feed-rotate False' ' 
+    syscall += '--model-ddes auto '
     syscall += '--weight-column ' + weight_column + ' ' 
     syscall += '--flags-auto-init legacy ' 
-    #syscall += '--flags-reinit-bitflags False ' 
+    syscall += '--flags-reinit-bitflags False ' 
     syscall += '--madmax-enable True ' 
     syscall += '--madmax-estimate corr ' 
     syscall += '--madmax-plot True ' 
-    #syscall += '--madmax-threshold ' 10,12 + str(1) + ' ' 
-    syscall += '--sol-term-iters 30 ' 
+    syscall += '--madmax-threshold ' + madmax_threshold + ' ' 
+    syscall += '--sol-term-iters ' + sol_term_iters + ' ' 
     syscall += '--sol-min-bl 300 ' 
     syscall += '--dist-ncpu 4 ' 
-    syscall += '--dist-max-chunks ' 4 + str(1) + ' ' 
-    #syscall += '--out-name ' /stimela_mount/output/delayself_0 + str(1) + ' ' 
+    syscall += '--dist-max-chunks 4 ' 
+    syscall += '--out-name ' + out_name + ' ' 
     syscall += '--out-overwrite True ' 
     syscall += '--out-mode sc ' 
     syscall += '--out-column ' + out_column + ' ' 
     syscall += '--out-casa-gaintables True ' 
     syscall += '--log-verbose solver=2 ' 
     syscall += '--g-time-int ' + g_freq_int + ' ' 
-    syscall += '--g-freq-int ' + str(1) + ' ' 
+    syscall += '--g-freq-int ' + g_freq_int + ' ' 
     syscall += '--g-clip-low ' + g_clip_low + ' ' 
     syscall += '--g-clip-high ' + g_clip_high + ' ' 
-    syscall += '--g-solvable ' + g_solvable1 + ' ' 
+    syscall += '--g-solvable ' + g_solvable + ' ' 
     syscall += '--g-type ' + g_type + ' ' 
-    syscall += '--g-save-to ' +g_save_to + ' '/stimela_mount/output/phase-0-0.parmdb + str(1) + ' ' 
+    #syscall += '--g-save-to ' + g_save_to + ' '/stimela_mount/output/phase-0-0.parmdb + str(1) + ' ' 
     
 # this function writes the slurm/bash script 
 def write_slurm(opfile,
