@@ -47,7 +47,7 @@
     out-mode             : "sc","sc","sc"
     madmax-threshold     : [10,12],[10,12],[10,12]
     log-verbose          : 'solver=2','solver=2','solver=2'
-    #g_save_to            : "phase-0-{0:d}.parmdb".format(i)
+    g_save_to            : 'phase-0-0.parmdb','phase-1-1.parmdb','phase-2-2.parmdb'
     
 
 - EMAIL:
