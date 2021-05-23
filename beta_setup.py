@@ -29,28 +29,31 @@ def write_table(opfile):
     t.writelines(['img_name  rms  dynamic_range  flux\n'])
     t.close()
 
-def selfcal_cubical(sol_jones        = 'G',
-                   data_ms           = myms,
-                   data_column       = 'DATA',
-                   out_column        = 'CORRECTED_DATA',
-                   weight_column     = 'WEIGHT_SPECTRUM',
-                   model_ddes        = 'auto',
-                   g_solvable        = True,
-                   g_type            = 'f-slope',
-                   time_chunk        = 1,
-                   freq_chunk        = 0,
-                   sol_term_iters    = 30,
-                   model_list        = 'MODEL_DATA',
-                   g_time_int        = 15,
-                   g_freq_int        = 0,
-                   g_clip_low        = 0.5,
-                   g_clip_high.      = 2.5,
-                   madmax_threshold  = [10,12],
+def selfcal_cubical(data_column,
+                   out_column,
+                   weight_column,
+                   data_ms,
+                   sol_jones,
+                   model_ddes,
+                   g_solvable,
+                   g_type,
+                   time_chunk,
+                   freq_chunk,
+                   sol_term_iters,
+                   sol_min_bl,
+                   model_list,
+                   g_time_int,
+                   g_freq_int,
+                   g_clip_low,
+                   g_clip_high,
+                   madmax_threshold,
                    #g_save_to,
-                   out_name          = 'delayself_0'):
+                   log_verbose,
+                   out_mode,
+                   out_name):
     
     syscall  = 'gocubical '
-    syscall += '--sol-jones G '
+    syscall += '--sol-jones ' + sol_jones + ' '
     syscall += '--data-ms ' + data_ms + ' ' 
     syscall += '--data-column ' + data_column + ' ' 
     syscall += '--data-time-chunk ' + time_chunk + ' ' 
@@ -65,15 +68,15 @@ def selfcal_cubical(sol_jones        = 'G',
     syscall += '--madmax-plot True ' 
     syscall += '--madmax-threshold ' + madmax_threshold + ' ' 
     syscall += '--sol-term-iters ' + sol_term_iters + ' ' 
-    syscall += '--sol-min-bl 300 ' 
+    syscall += '--sol-min-bl ' + sol_min_bl + ' ' 
     syscall += '--dist-ncpu 4 ' 
     syscall += '--dist-max-chunks 4 ' 
     syscall += '--out-name ' + out_name + ' ' 
     syscall += '--out-overwrite True ' 
-    syscall += '--out-mode sc ' 
+    syscall += '--out-mode ' + out_mode + ' ' 
     syscall += '--out-column ' + out_column + ' ' 
     syscall += '--out-casa-gaintables True ' 
-    syscall += '--log-verbose solver=2 ' 
+    syscall += '--log-verbose ' + log_verbose + ' ' 
     syscall += '--g-time-int ' + g_freq_int + ' ' 
     syscall += '--g-freq-int ' + g_freq_int + ' ' 
     syscall += '--g-clip-low ' + g_clip_low + ' ' 
