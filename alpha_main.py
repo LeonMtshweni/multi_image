@@ -104,38 +104,28 @@ def main():
     uv_tapering       = YAML[6]['Imaging']['uv_tapering'].split(',')
     
     # selfcal parameters
-    data_column           = YAML[7]['Selfcal']['data-column']
-    out_column            = YAML[7]['Selfcal']['out-column']
-    weight_column         = YAML[7]['Selfcal']['weight-column']
-    model_ddes            = YAML[7]['Selfcal']['model-ddes']
-    g_solvable            = YAML[7]['Selfcal']['g-solvable']
-    #g_type               = YAML[7]['Selfcal']
-    g_type                = YAML[7]['Selfcal']['g-type']
-    flags_reinit_bitflags = YAML[7]['Selfcal']
-    g_save_to             = YAML[7]['Selfcal']
-    flags_auto_init       = YAML[7]['Selfcal']
-    sol_jones             = YAML[7]['Selfcal']
-    sol_min_bl            = YAML[7]['Selfcal']
-    g_clip_high           = YAML[7]['Selfcal']
-    g_clip_low            = YAML[7]['Selfcal']
-    g_solvable            = YAML[7]['Selfcal']
-    g_time_int            = YAML[7]['Selfcal']
-    out_overwrite         = YAML[7]['Selfcal']
-    g_freq_int            = YAML[7]['Selfcal']
-    model_list            = YAML[7]['Selfcal']
-    sol_term_iters        = YAML[7]['Selfcal']
-    out_name              = YAML[7]['Selfcal']
-    data_freq_chunk       = YAML[7]['Selfcal']
-    data_time_chunk       = YAML[7]['Selfcal']
-    dist_ncpu             = YAML[7]['Selfcal']
-    dist_max_chunks       = YAML[7]['Selfcal']
-    out_mode              = YAML[7]['Selfcal']
-    madmax_enable         = YAML[7]['Selfcal']
-    madmax_plot           = YAML[7]['Selfcal']
-    madmax_threshold      = YAML[7]['Selfcal']
-    madmax_estimate       = YAML[7]['Selfcal']
-    out_casa_gaintables   = YAML[7]['Selfcal']
-    log_verbose           = YAML[7]['Selfcal']
+    data_column           = YAML[7]['Selfcal']['data-column'].split(',')
+    out_column            = YAML[7]['Selfcal']['out-column'].split(',')
+    weight_column         = YAML[7]['Selfcal']['weight-column'].split(',')
+    model_ddes            = YAML[7]['Selfcal']['model-ddes'].split(',')
+    g_solvable            = YAML[7]['Selfcal']['g-solvable'].split(',')
+    g_type                = YAML[7]['Selfcal']['g-type'].split(',')
+    #g_save_to             = YAML[7]['Selfcal']['g-save-to'].split(',')
+    sol_jones             = YAML[7]['Selfcal']'[sol-jones'].split(',')
+    sol_min_bl            = YAML[7]['Selfcal']['sol-min-bl'].split(',')
+    g_clip_high           = YAML[7]['Selfcal']['g-clip-high'].split(',')
+    g_clip_low            = YAML[7]['Selfcal']['g-clip-low'].split(',')
+    g_solvable            = YAML[7]['Selfcal']['g-solvable'].split(',')
+    g_time_int            = YAML[7]['Selfcal']['g-time-int'].split(',')
+    g_freq_int            = YAML[7]['Selfcal']['g-freq-int'].split(',')
+    model_list            = YAML[7]['Selfcal']['model-list'].split(',')
+    sol_term_iters        = YAML[7]['Selfcal']['sol-term-iters'].split(',')
+    out_name              = YAML[7]['Selfcal']['out-name'].split(',')
+    data_freq_chunk       = YAML[7]['Selfcal']['data-freq-chunk'].split(',')
+    data_time_chunk       = YAML[7]['Selfcal']['data-time-chunk'].split(',')
+    out_mode              = YAML[7]['Selfcal']['out-mode'].split(',')
+    madmax_threshold      = YAML[7]['Selfcal']['madmax-threshold'].split(',')
+    log_verbose           = YAML[7]['Selfcal']['log-verbose'].split(',')
 
     # ms_file to be copied
     ms_path = MS_BAK_DIR + og_dat
@@ -399,11 +389,14 @@ def main():
                                          model_list        = 'MODEL_DATA',
                                          g_time_int        = 15,
                                          g_freq_int        = 0,
+                                         sol_min_bl        = 300,
                                          g_clip_low        = 0.5,
                                          g_clip_high.      = 2.5,
                                          madmax_threshold  = [10,12],
-                                         #g_save_to,
+                                         #g_save_to        = "phase-0-{0:d}.parmdb".format(i),
+                                         log-verbose       = 'solver=2',
                                          out_name          = 'delayself_0')
+                                               
          # call function that writes the header info of a bash script
          beta.write_slurm(opfile  = bash_script,
                           jobname = 'cubical_' + myms,
