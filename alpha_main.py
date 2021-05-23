@@ -374,10 +374,10 @@ def main():
          # ------------------------------------------------------------------------------
          # Self-calibrate phases
 
-         bash_script = SCRIPTS + '/' + myms + '_phase_cal.sh' # name of the slurm file
-         logfile   = LOGS + '/' + myms + '_phase_cal.log'  # name of log file
+         bash_script = SCRIPTS + '/' + myms + '_cubical.sh' # name of the slurm file
+         logfile   = LOGS + '/' + myms + '_cubical.log'  # name of log file
 
-         syscall   = 'singularity exec '+CUBICAL_CONTAINER+' '
+         syscall   = 'singularity exec ' + CUBICAL_CONTAINER + ' '
          #syscall   = 'singularity exec '+CASA_CONTAINER+' '
          #syscall  += 'casa -c ' + cwd + '/epsilon_selfcal_target_phases.py ' + myms_ext + ' ' + uv_range + ' --nologger --log2term --nogui\n'
          #beta.write_slurm(opfile = bash_script,
@@ -385,11 +385,34 @@ def main():
          #                logfile = logfile,
          #                mail_ad = address_mail,
          #                syscall = syscall)
-         syscall += beta.selfcal_cubical(myms,
-                                         
-             
-             
-         job_id_phasecal1 = 'PHASECAL_' + myms
+         syscall += beta.selfcal_cubical(data_ms           = [myms_ext],
+                                         data_column       = 'DATA', 
+                                         out_column        = 'CORRECTED_DATA',
+                                         weight_column     = 'WEIGHT_SPECTRUM',
+                                         sol_jones         = 'G',
+                                         model_ddes        = 'auto',
+                                         g_solvable        = True,
+                                         g_type            = 'f-slope',
+                                         time_chunk        = 1,
+                                         freq_chunk        = 0,
+                                         sol_term_iters    = 30,
+                                         model_list        = 'MODEL_DATA',
+                                         g_time_int        = 15,
+                                         g_freq_int        = 0,
+                                         g_clip_low        = 0.5,
+                                         g_clip_high.      = 2.5,
+                                         madmax_threshold  = [10,12],
+                                         #g_save_to,
+                                         out_name          = 'delayself_0')
+         # call function that writes the header info of a bash script
+         beta.write_slurm(opfile  = bash_script,
+                          jobname = 'cubical_' + myms,
+                          logfile = logfile,
+                          mail_ad = address_mail,
+                          syscall = syscall)
+
+
+         job_id_phasecal1 = 'CUBICAL_' + myms
          syscall = job_id_phasecal1 + "=`sbatch -d afterok:${"+job_id_predict1+"} "+bash_script+" | awk '{print $4}'`"
          # write the syscall command to the submit file
          f.write(syscall+'\n')
@@ -459,7 +482,7 @@ def main():
          bash_script = SCRIPTS + '/' + myms+'_wsclean_correct.sh' # name of the slurm file
          logfile   = LOGS + '/' + myms+'_wsclean_correct.log'  # name of log file
 
-         syscall  = 'singularity exec '+WSCLEAN_CONTAINER+' '
+         syscall  = 'singularity exec ' + WSCLEAN_CONTAINER + ' '
          syscall += beta.generate_syscall_wsclean(mslist         = [myms_ext],
                                                   imgname        = pcal_prefix,
                                                   datacol        = 'CORRECTED_DATA',
