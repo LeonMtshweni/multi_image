@@ -26,27 +26,27 @@
     uv_tapering: 2.0,2.0,2.0
 
 - Selfcal:
-    data-column          : "DATA"               ### Column in which the data lives.
-    out-column           : "CORRECTED_DATA"
-    weight-column        : "WEIGHT_SPECTRUM"
-    model-ddes           : "auto"
-    g-solvable           : True
-    g-type               : "f-slope"           ### Solves for residual delays + phase ###
-    sol-jones            : "G"
-    sol-min-bl           : 300
-    g-clip-high          : 2.5
-    g-clip-low           : 0.5
-    g-solvable           : True
-    g-time-int           : 15    ### solution interval of 15 timeslots - should be really 1 timeslot for delays ###
-    g-freq-int           : 0     ### solution interval in f: the whole bandwidth, i.e. don't solve for bandpass ###
-    model-list           : spf("MODEL_DATA")
-    sol-term-iters       : 30
-    out-name             : "delayself_0"
-    data-freq-chunk      : 0
-    data-time-chunk      : 1
-    out-mode             : "sc"
-    madmax-threshold     : [10,12]
-    log-verbose          : 'solver=2'
+    data-column          : "DATA","DATA","DATA"           ### Column in which the data lives.
+    out-column           : "CORRECTED_DATA","CORRECTED_DATA","CORRECTED_DATA"
+    weight-column        : "WEIGHT_SPECTRUM","WEIGHT_SPECTRUM","WEIGHT_SPECTRUM"
+    model-ddes           : "auto","auto","auto"
+    g-solvable           : True,True,True
+    g-type               : "f-slope","f-slope","f-slope"           ### Solves for residual delays + phase ###
+    sol-jones            : "G","G","G"
+    sol-min-bl           : 300,300,300
+    g-clip-high          : 2.5,2.5,2.5
+    g-clip-low           : 0.5,0.5,0.5
+    g-solvable           : True,True,True
+    g-time-int           : 15,15,15    ### solution interval of 15 timeslots - should be really 1 timeslot for delays ###
+    g-freq-int           : 0,0,0     ### solution interval in f: the whole bandwidth, i.e. don't solve for bandpass ###
+    model-list           : "MODEL_DATA","MODEL_DATA","MODEL_DATA"
+    sol-term-iters       : 30,30,30
+    out-name             : "delayself_0","delayself_1","delayself_2"
+    data-freq-chunk      : 0,0,0
+    data-time-chunk      : 1,1,1
+    out-mode             : "sc","sc","sc"
+    madmax-threshold     : [10,12],[10,12],[10,12]
+    log-verbose          : 'solver=2','solver=2','solver=2'
     #g_save_to            : "phase-0-{0:d}.parmdb".format(i)
     
 
