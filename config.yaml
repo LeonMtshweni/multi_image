@@ -32,7 +32,6 @@
     model-ddes           : "auto"
     g-solvable           : True
     g-type               : "f-slope"           ### Solves for residual delays + phase ###
-    g-save-to            : "phase-0-{0:d}.parmdb".format(i)
     sol-jones            : "G"
     sol-min-bl           : 300
     g-clip-high          : 2.5
