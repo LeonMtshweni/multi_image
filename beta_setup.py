@@ -47,7 +47,7 @@ def selfcal_cubical(data_column,
                    g_clip_low,
                    g_clip_high,
                    madmax_threshold,
-                   #g_save_to,
+                   g_save_to,
                    log_verbose,
                    out_mode,
                    out_name):
@@ -83,7 +83,7 @@ def selfcal_cubical(data_column,
     syscall += '--g-clip-high ' + g_clip_high + ' ' 
     syscall += '--g-solvable ' + g_solvable + ' ' 
     syscall += '--g-type ' + g_type + ' ' 
-    #syscall += '--g-save-to ' + g_save_to + ' '/stimela_mount/output/phase-0-0.parmdb + str(1) + ' ' 
+    syscall += '--g-save-to ' + g_save_to + ' ' 
     
 # this function writes the slurm/bash script 
 def write_slurm(opfile,
