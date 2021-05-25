@@ -38,9 +38,6 @@ SHADEMS = '/software/astro/caracal/STIMELA_IMAGES_1.6.1/stimela_shadems_1.7.0.si
 # convert container
 IMAGE_MAGIC_CONTAINER='/idia/software/containers/imagemagick.simg'
 
-# directory where data is fetched
-MS_BAK_DIR = '/scratch/users/mtshweni/masters/msback_up/'
-
 # Essential directories
 LOGS      = cwd + '/logs'
 MAPS      = './maps' #cwd + '/maps' # i used the shorthand method because of another script
