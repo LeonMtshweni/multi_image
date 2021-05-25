@@ -367,6 +367,9 @@ def main():
 
          bash_script = SCRIPTS + '/' + myms + '_cubical.sh' # name of the slurm file
          logfile   = LOGS + '/' + myms + '_cubical.log'  # name of log file
+        
+        # replace the madmax-threshold ";" with a ","
+        iter_madmax_threshold = iter_madmax_threshold.replace(';',',')
 
          syscall   = 'singularity exec ' + CUBICAL_CONTAINER + ' '
          #syscall   = 'singularity exec '+CASA_CONTAINER+' '
