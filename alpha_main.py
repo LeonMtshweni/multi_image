@@ -40,8 +40,6 @@ IMAGE_MAGIC_CONTAINER='/idia/software/containers/imagemagick.simg'
 
 # directory where data is fetched
 MS_BAK_DIR = '/scratch/users/mtshweni/masters/msback_up/'
-# mask directory
-MASK_DIR = '/scratch/users/mtshweni/masters/masks/'
 
 # Essential directories
 LOGS      = cwd + '/logs'
@@ -126,12 +124,15 @@ def main():
     out_mode              = YAML[7]['Selfcal']['out-mode'].split(',')
     madmax_threshold      = YAML[7]['Selfcal']['madmax-threshold'].split(',')
     log_verbose           = YAML[7]['Selfcal']['log-verbose'].split(',')
+    
+    # mask directory
+    MASK_DIR = YAML[8]['OG_data_path']['path']
 
     # ms_file to be copied
     ms_path = MS_BAK_DIR + og_dat
     
     # mailing service address
-    address_mail = YAML[7]['EMAIL']['address']
+    address_mail = YAML[9]['EMAIL']['address']
     
     # this loop simultaneously iterates through the lists provided
     for (myms,uv_range,fitsmask,min_uvw,isl_pix,rbst,auto_thresh,auto_mask,mltscl_cln,mltscl_scls,taper_bool,uv_taper,iter_data_column,iter_out_column,iter_weight_column,iter_model_ddes,iter_g_solvable,iter_g_type,iter_g_save_to,iter_sol_jones,iter_sol_min_bl,iter_g_clip_high,iter_g_clip_low,iter_g_solvable,iter_g_time_int,iter_g_freq_int,iter_model_list,iter_sol_term_iters,iter_out_name,iter_data_freq_chunk,iter_data_time_chunk,iter_out_mode,iter_madmax_threshold,iter_log_verbose) in zip(mslist,uvlist,masklist,wsclean_uv_range,isl_pix_input,robustness,auto_threshld,auto_mask_size,multiscale_clean,multiscale_scales,taper_UV,uv_tapering,data_column,out_column,weight_column,model_ddes,g_solvable,g_type,g_save_to,sol_jones,sol_min_bl,g_clip_high,g_clip_low,g_solvable,g_time_int,g_freq_int,model_list,sol_term_iters,out_name,data_freq_chunk,data_time_chunk,out_mode,madmax_threshold,log_verbose):
