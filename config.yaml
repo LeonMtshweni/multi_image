@@ -1,9 +1,6 @@
 - OG_data:
     bckup: 1561723022_sdp_l0.full_1284.full_pol_split_1024ch_3C274_64_chn_32s.ms
 
-- OG_data_path:
-    path: /scratch3/users/mtshweni/oxkat_2.0/testing_multi_image/multi_image
-
 - Duplicates:
     mslist: auto1,auto2,auto3
 
@@ -52,6 +49,8 @@
     log-verbose          : 'solver=2','solver=2','solver=2'
     g_save_to            : 'phase-0-0.parmdb','phase-1-1.parmdb','phase-2-2.parmdb'
   
+- OG_data_path:
+    path: /scratch3/users/mtshweni/oxkat_2.0/testing_multi_image/multi_image/
 
 - EMAIL:
     address: 13371062@tuks.co.za
