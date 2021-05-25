@@ -1,6 +1,9 @@
 - OG_data:
     bckup: 1561723022_sdp_l0.full_1284.full_pol_split_1024ch_3C274_64_chn_32s.ms
 
+- OG_data_path:
+    path: /scratch3/users/mtshweni/oxkat_2.0/testing_multi_image/multi_image
+
 - Duplicates:
     mslist: auto1,auto2,auto3
 
