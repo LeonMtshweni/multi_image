@@ -47,7 +47,7 @@ def selfcal_cubical(data_column,
                    g_clip_low,
                    g_clip_high,
                    madmax_threshold,
-                   g_save_to,
+                   #g_save_to,
                    log_verbose,
                    out_mode,
                    out_name):
@@ -73,17 +73,19 @@ def selfcal_cubical(data_column,
     syscall += '--dist-max-chunks 4 ' 
     syscall += '--out-name ' + out_name + ' ' 
     syscall += '--out-overwrite True ' 
-    syscall += '--out-mode ' + out_mode + ' ' 
+    syscall += '--out-mode ' + str(out_mode) + ' ' 
     syscall += '--out-column ' + out_column + ' ' 
     syscall += '--out-casa-gaintables True ' 
     syscall += '--log-verbose ' + log_verbose + ' ' 
-    syscall += '--g-time-int ' + g_freq_int + ' ' 
-    syscall += '--g-freq-int ' + g_freq_int + ' ' 
-    syscall += '--g-clip-low ' + g_clip_low + ' ' 
-    syscall += '--g-clip-high ' + g_clip_high + ' ' 
+    syscall += '--g-time-int ' + str(g_time_int) + ' ' 
+    syscall += '--g-freq-int ' + str(g_freq_int) + ' ' 
+    syscall += '--g-clip-low ' + str(g_clip_low) + ' ' 
+    syscall += '--g-clip-high ' + str(g_clip_high) + ' ' 
     syscall += '--g-solvable ' + g_solvable + ' ' 
     syscall += '--g-type ' + g_type + ' ' 
-    syscall += '--g-save-to ' + g_save_to + ' ' 
+    #syscall += '--g-save-to ' + g_save_to + ' ' 
+
+    return syscall
     
 # this function writes the slurm/bash script 
 def write_slurm(opfile,
@@ -226,4 +228,3 @@ def generate_syscall_predict(msname,
     syscall += msname
 
     return syscall
-
