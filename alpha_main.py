@@ -38,6 +38,12 @@ SHADEMS = '/software/astro/caracal/STIMELA_IMAGES_1.6.1/stimela_shadems_1.7.0.si
 # convert container
 IMAGE_MAGIC_CONTAINER='/idia/software/containers/imagemagick.simg'
 
+# directory where data is fetched
+#MS_BAK_DIR = '/scratch/users/mtshweni/masters/msback_up/'
+
+# mask directory
+MASK_DIR = cwd
+
 # Essential directories
 LOGS      = cwd + '/logs'
 MAPS      = './maps' #cwd + '/maps' # i used the shorthand method because of another script
@@ -105,7 +111,7 @@ def main():
     model_ddes            = YAML[7]['Selfcal']['model-ddes'].split(',')
     g_solvable            = YAML[7]['Selfcal']['g-solvable'].split(',')
     g_type                = YAML[7]['Selfcal']['g-type'].split(',')
-    g_save_to             = YAML[7]['Selfcal']['g-save-to'].split(',')
+    #g_save_to             = YAML[7]['Selfcal']['g-save-to'].split(',')
     sol_jones             = YAML[7]['Selfcal']['sol-jones'].split(',')
     sol_min_bl            = YAML[7]['Selfcal']['sol-min-bl'].split(',')
     g_clip_high           = YAML[7]['Selfcal']['g-clip-high'].split(',')
@@ -122,17 +128,21 @@ def main():
     madmax_threshold      = YAML[7]['Selfcal']['madmax-threshold'].split(',')
     log_verbose           = YAML[7]['Selfcal']['log-verbose'].split(',')
     
-    # mask directory
-    MASK_DIR = YAML[8]['OG_data_path']['path']
+    # measurement set directory
+    MS_BAK_DIR = YAML[8]['OG_data_path']['path']
 
     # ms_file to be copied
+    #ms_path = MS_BAK_DIR + og_dat
     ms_path = MS_BAK_DIR + og_dat
-    
     # mailing service address
     address_mail = YAML[9]['EMAIL']['address']
     
     # this loop simultaneously iterates through the lists provided
-    for (myms,uv_range,fitsmask,min_uvw,isl_pix,rbst,auto_thresh,auto_mask,mltscl_cln,mltscl_scls,taper_bool,uv_taper,iter_data_column,iter_out_column,iter_weight_column,iter_model_ddes,iter_g_solvable,iter_g_type,iter_g_save_to,iter_sol_jones,iter_sol_min_bl,iter_g_clip_high,iter_g_clip_low,iter_g_solvable,iter_g_time_int,iter_g_freq_int,iter_model_list,iter_sol_term_iters,iter_out_name,iter_data_freq_chunk,iter_data_time_chunk,iter_out_mode,iter_madmax_threshold,iter_log_verbose) in zip(mslist,uvlist,masklist,wsclean_uv_range,isl_pix_input,robustness,auto_threshld,auto_mask_size,multiscale_clean,multiscale_scales,taper_UV,uv_tapering,data_column,out_column,weight_column,model_ddes,g_solvable,g_type,g_save_to,sol_jones,sol_min_bl,g_clip_high,g_clip_low,g_solvable,g_time_int,g_freq_int,model_list,sol_term_iters,out_name,data_freq_chunk,data_time_chunk,out_mode,madmax_threshold,log_verbose):
+    for (myms,uv_range,fitsmask,min_uvw,isl_pix,rbst,auto_thresh,auto_mask,mltscl_cln,mltscl_scls,taper_bool,uv_taper,iter_data_column,iter_out_column,iter_weight_column,iter_mo
+del_ddes,iter_g_solvable,iter_g_type,iter_sol_jones,iter_sol_min_bl,iter_g_clip_high,iter_g_clip_low,iter_g_solvable,iter_g_time_int,iter_g_freq_int,iter_model_list,iter_sol_ter
+m_iters,iter_out_name,iter_data_freq_chunk,iter_data_time_chunk,iter_out_mode,iter_madmax_threshold,iter_log_verbose) in zip(mslist,uvlist,masklist,wsclean_uv_range,isl_pix_inpu
+t,robustness,auto_threshld,auto_mask_size,multiscale_clean,multiscale_scales,taper_UV,uv_tapering,data_column,out_column,weight_column,model_ddes,g_solvable,g_type,sol_jones,sol
+_min_bl,g_clip_high,g_clip_low,g_solvable,g_time_int,g_freq_int,model_list,sol_term_iters,out_name,data_freq_chunk,data_time_chunk,out_mode,madmax_threshold,log_verbose):
 
          #image names 
          blind_prefix = MAPS  + '/' + 'img_'+myms+'_data'
@@ -160,10 +170,10 @@ def main():
          root, sep, extension = src.partition('.')
          
          # assigning myms an extension
-         myms_ext = MS_DIR  + '/' + myms + '.' + extension
+         myms_ext = MS_DIR  + '/' + myms + '.ms' # + extension
 
          # the name and path to copy the file to
-         dst = MS_DIR  + '/' + myms + '.' + extension
+         dst = MS_DIR  + '/' + myms + '.ms' #+ extension
 
          # checks if copy already exists in current dir
          if os.path.exists(dst):
@@ -364,10 +374,10 @@ def main():
 
          bash_script = SCRIPTS + '/' + myms + '_cubical.sh' # name of the slurm file
          logfile   = LOGS + '/' + myms + '_cubical.log'  # name of log file
-        
-        # replace the madmax-threshold ";" with a ","
-        iter_madmax_threshold = iter_madmax_threshold.replace(';',',')
 
+         # replace the madmax-threshold ";" with a ",'
+         iter_madmax_threshold = iter_madmax_threshold.replace(';',',')
+         
          syscall   = 'singularity exec ' + CUBICAL_CONTAINER + ' '
          #syscall   = 'singularity exec '+CASA_CONTAINER+' '
          #syscall  += 'casa -c ' + cwd + '/epsilon_selfcal_target_phases.py ' + myms_ext + ' ' + uv_range + ' --nologger --log2term --nogui\n'
@@ -376,7 +386,7 @@ def main():
          #                logfile = logfile,
          #                mail_ad = address_mail,
          #                syscall = syscall)
-         syscall += beta.selfcal_cubical(data_ms           = [myms_ext],
+         syscall += beta.selfcal_cubical(data_ms           = myms_ext,
                                          data_column       = iter_data_column, 
                                          out_column        = iter_out_column,
                                          weight_column     = iter_weight_column,
@@ -384,8 +394,8 @@ def main():
                                          model_ddes        = iter_model_ddes,
                                          g_solvable        = iter_g_solvable,
                                          g_type            = iter_g_type,
-                                         time_chunk        = iter_data_freq_chunk,
-                                         freq_chunk        = iter_data_time_chunk,
+                                         time_chunk        = iter_data_time_chunk,
+                                         freq_chunk        = iter_data_freq_chunk,
                                          sol_term_iters    = iter_sol_term_iters,
                                          model_list        = iter_model_list,
                                          g_time_int        = iter_g_time_int,
@@ -394,9 +404,9 @@ def main():
                                          g_clip_low        = iter_g_clip_high,
                                          g_clip_high       = iter_g_clip_low,
                                          madmax_threshold  = iter_madmax_threshold,
-                                         g_save_to         = iter_g_save_to,
+                                         #g_save_to         = iter_g_save_to,
                                          log_verbose       = iter_log_verbose,
-                                         out_mode          = out_mode,
+                                         out_mode          = iter_out_mode,
                                          out_name          = iter_out_name)
                                                
          # call function that writes the header info of a bash script
