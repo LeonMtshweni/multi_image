@@ -97,8 +97,8 @@ def write_slurm(opfile,
                 partition='Main',
                 ntasks='1',
                 nodes='1',
-                cpus='4',
-                mem='32GB'):
+                cpus='32',
+                mem='128GB'):
 
     f = open(opfile,'w')
     f.writelines(['#!/bin/bash\n',
